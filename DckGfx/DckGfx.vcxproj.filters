@@ -16,6 +16,9 @@
     <Filter Include="Source Files\Graphics">
       <UniqueIdentifier>{3aa76bf0-6a9b-4243-8c65-353b677012cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Graphics\Shaders">
+      <UniqueIdentifier>{df6aff60-2b21-492c-8ce7-6520b441941e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -30,6 +33,9 @@
     <ClCompile Include="Source\FileReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Shader.cpp">
+      <Filter>Source Files\Graphics\Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Stub.h">
@@ -37,6 +43,9 @@
     </ClInclude>
     <ClInclude Include="Source\FileReader.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Shader.h">
+      <Filter>Source Files\Graphics\Shaders</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
