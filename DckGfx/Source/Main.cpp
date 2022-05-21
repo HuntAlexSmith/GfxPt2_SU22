@@ -1,36 +1,22 @@
+//*****************************************************************************
+//	File:   Main.cpp
+//  Author: Hunter Smith
+//  Date:   05/20/2022
+//  Description: It's main, not much else to say
+//*****************************************************************************
 #include <iostream>
 #include <string>
 #include <stdexcept>
 #include "SDL2/SDL.h"
 #include "glad/glad.h"
 #include "glm/glm.hpp"
+#include "FileReader.h"
 
 // Window Stuff
 static const int width = 1280;
 static const int height = 720;
 static SDL_Window* windowHandle = nullptr;
 static SDL_GLContext glContext;
-
-// Quick and dirty OpenGL stuff for rendering a Triangle
-const char* vertexShaderCode =
-	"#version 450 core\n\
-	 in vec3 position;\n\
-	 in vec3 color;\n\
-	 out vec3 myColor;\n\
-	 void main()\n\
-     {\n\
-		gl_Position = vec4(position.x, position.y, position.z, 1.0);\n\
-	    myColor = color;\n\
-	 }\0";
-
-const char* fragmentShaderCode = 
-	"#version 450 core\n\
-	 in vec3 myColor;\n\
-	 out vec4 FragColor;\n\
-	 void main()\n\
-	 {\n\
-		FragColor = vec4(myColor, 1.0f);\n\
-	 }\0";
 
 // Triangle vertices and buffers
 GLuint program;
@@ -55,6 +41,7 @@ unsigned int indices[] = {
 	0, 1, 2,
 };
 
+// Functions for shader stuff
 void CompileShader();
 void CreateMeshVAO();
 
@@ -103,6 +90,7 @@ int main(int argc, char* argv[]) {
 	glViewport(0, 0, w, h);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
+	// Compile the shader and create a mesh
 	CompileShader();
 	CreateMeshVAO();
 
@@ -111,14 +99,19 @@ int main(int argc, char* argv[]) {
 	bool quit = false;
 	while (!quit)
 	{
+		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		// Use the program, bind the vao, and draw it
 		glUseProgram(program);
 		glBindVertexArray(vao);
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
+		// Swap buffers
 		SDL_GL_SwapWindow(windowHandle);
+
+		// Checking for the window closing event
 		while (SDL_PollEvent(&windowEvent))
 		{
 			if (windowEvent.type == SDL_QUIT)
@@ -144,11 +137,18 @@ int main(int argc, char* argv[]) {
 
 void CompileShader()
 {
-	// Attempt to compile vertex shader
+	// Read the Vertex Shader code from a file
+	std::string vertCodeStr = ReadShaderFile("Data/2dShader.vert");
+	if (vertCodeStr.empty())
+		return;
+	const char* vertexShaderCode = vertCodeStr.c_str();
+
+	// Attempt to compile the vertex shader code
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexShaderCode, nullptr);
 	glCompileShader(vertexShader);
 
+	// Error checking
 	GLint worked;
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &worked);
 	if (!worked)
@@ -160,11 +160,21 @@ void CompileShader()
 		throw std::runtime_error(errMsg);
 	}
 
+	// Read the fragment shader code from a file
+	std::string fragCodeStr = ReadShaderFile("Data/2dShader.frag");
+	if (fragCodeStr.empty())
+	{
+		glDeleteShader(vertexShader);
+		return;
+	}
+	const char* fragmentShaderCode = fragCodeStr.c_str();
+
 	// Attempt to compile fragment shader
 	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentShaderCode, nullptr);
 	glCompileShader(fragmentShader);
 
+	// Error checking
 	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &worked);
 	if (!worked)
 	{
@@ -181,6 +191,7 @@ void CompileShader()
 	glAttachShader(program, vertexShader);
 	glLinkProgram(program);
 
+	// Error checking
 	glGetProgramiv(program, GL_LINK_STATUS, &worked);
 	if (!worked)
 	{
@@ -217,17 +228,20 @@ void CreateMeshVAO()
 	GLint posAttrib = glGetAttribLocation(program, "position");
 	GLint colorAttrib = glGetAttribLocation(program, "color");
 
-
+	// Enable the position attribute for the vao, make sure it links with the vbo, and format the attrib
 	glEnableVertexArrayAttrib(vao, posAttrib);
 	glVertexArrayAttribBinding(vao, posAttrib, vbo-1);
 	glVertexArrayAttribFormat(vao, posAttrib, 3, GL_FLOAT, GL_FALSE, 0);
 
+	// Enable the color attribute for the vao, make sure it links with the vbo, and format the attrib
 	glEnableVertexArrayAttrib(vao, colorAttrib);
 	glVertexArrayAttribBinding(vao, colorAttrib, cbo-1);
 	glVertexArrayAttribFormat(vao, colorAttrib, 3, GL_FLOAT, GL_FALSE, 0);
 
+	// Bind the buffers to the respective attributes and bind them with the vao
 	glVertexArrayVertexBuffer(vao, posAttrib, vbo, 0, 3*sizeof(float));
 	glVertexArrayVertexBuffer(vao, colorAttrib, cbo, 0, 3 * sizeof(float));
 
+	// Bind the ebo with the vao
 	glVertexArrayElementBuffer(vao, ebo);
 }
