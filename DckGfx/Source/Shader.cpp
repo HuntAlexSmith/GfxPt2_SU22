@@ -20,7 +20,7 @@
 //	Param fragFile
 //		The filepath of the fragment shader
 //*****************************************************************************
-Shader::Shader(const char* vertFile, const char* fragFile) : program_(0), attribs_() {
+Shader::Shader(const char* vertFile, const char* fragFile) : program_(0), attribs_(), uniforms_() {
 	// Read the vertex shader file
 	std::string vertCodeStr = ReadShaderFile(vertFile);
 	if (vertCodeStr.empty())
@@ -117,6 +117,17 @@ Shader::Shader(const char* vertFile, const char* fragFile) : program_(0), attrib
 		std::pair<std::string, GLint> attribToAdd(std::string(varName), i);
 		attribs_.insert(attribToAdd);
 	}
+
+	// Get all the uniforms in the program
+	GLint uniformCount;
+	glGetProgramiv(program_, GL_ACTIVE_UNIFORMS, &uniformCount);
+
+	for (GLint i = 0; i < uniformCount; ++i)
+	{
+		glGetActiveUniform(program_, i, bufSize, &length, &size, &type, varName);
+		std::pair<std::string, GLint> uniformToAdd(std::string(varName), i);
+		uniforms_.insert(uniformToAdd);
+	}
 }
 
 //*****************************************************************************
@@ -139,6 +150,23 @@ void Shader::Use() {
 //*****************************************************************************
 GLint Shader::GetAttribLocation(std::string attribName) {
 	auto result = attribs_.find(attribName);
+	if (result == attribs_.end())
+		return -1;
+	return result->second;
+}
+
+//*****************************************************************************
+//  Description
+//		Get the location of a specified uniform from the shader
+//	
+//	Param uniformName
+//		The name of the uniform we want the location of
+// 
+//	Return
+//		Returns the location of the uniform, -1 if it wasn't found
+//*****************************************************************************
+GLint Shader::GetUniformLocation(std::string uniformName) {
+	auto result = attribs_.find(uniformName);
 	if (result == attribs_.end())
 		return -1;
 	return result->second;

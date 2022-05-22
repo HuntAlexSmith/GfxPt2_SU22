@@ -18,7 +18,8 @@ public:
 	void Use();
 
 	GLint GetAttribLocation(std::string attribName);
-
+	GLint GetUniformLocation(std::string uniformName);
+	
 	~Shader();
 
 private:
@@ -30,4 +31,5 @@ private:
 	std::map<std::string, GLint> attribs_;
 
 	// Uniform locations ( will do this when needed)
+	std::map<std::string, GLint> uniforms_;
 };

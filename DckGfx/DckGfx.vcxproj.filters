@@ -19,6 +19,12 @@
     <Filter Include="Source Files\Graphics\Shaders">
       <UniqueIdentifier>{df6aff60-2b21-492c-8ce7-6520b441941e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Graphics\Meshes">
+      <UniqueIdentifier>{4198e0a1-fc51-41ff-8019-ac596c215338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Math">
+      <UniqueIdentifier>{f98dc4fc-74ca-49b6-a355-e195546cf249}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -36,6 +42,9 @@
     <ClCompile Include="Source\Shader.cpp">
       <Filter>Source Files\Graphics\Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Mesh.cpp">
+      <Filter>Source Files\Graphics\Meshes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Stub.h">
@@ -46,6 +55,9 @@
     </ClInclude>
     <ClInclude Include="Source\Shader.h">
       <Filter>Source Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Mesh.h">
+      <Filter>Source Files\Graphics\Meshes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

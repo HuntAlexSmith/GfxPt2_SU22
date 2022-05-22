@@ -12,6 +12,7 @@
 #include "glm/glm.hpp"
 #include "FileReader.h"
 #include "Shader.h"
+#include "Mesh.h"
 
 // Window Stuff
 static const int width = 1280;
@@ -21,30 +22,31 @@ static SDL_GLContext glContext;
 
 // Triangle vertices and buffers
 Shader* shader;
-GLuint program;
+Mesh* myMesh;
 GLuint vao;
 GLuint vbo;
 GLuint cbo;
 GLuint ebo;
 
-float vertices[] = {
-	-0.5f, -0.5f, 0.0f,
-	0.5f, -0.5f, 0.0f,
-	0.0f, 0.5f, 0.0f
+glm::vec4 triVertices[] = {
+	glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f),
+	glm::vec4(0.5f, -0.5f, 0.0f, 1.0f),
+	glm::vec4(0.0f, 0.5f, 0.0f, 1.0f),
 };
 
-float colors[] = {
-	1.0f, 0.0f, 0.0f,
-	0.0f, 1.0f, 0.0f,
-	0.0f, 0.0f, 1.0f
+glm::vec4 squareVertices[] = {
+	glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f),
+	glm::vec4(0.5f, -0.5f, 0.0f, 1.0f),
+	glm::vec4(0.5f, 0.5f, 0.0f, 1.0f),
+	glm::vec4(-0.5f, 0.5f, 0.0f, 1.0f)
 };
 
-unsigned int indices[] = {
-	0, 1, 2,
+glm::vec3 colors[] = {
+	glm::vec3(1.0f, 0.0f, 0.0f),
+	glm::vec3(0.0f, 1.0f, 0.0f),
+	glm::vec3(0.0f, 0.0f, 1.0f),
+	glm::vec3(0.0f, 0.0f, 0.0f)
 };
-
-// Functions for shader stuff
-void CreateMeshVAO();
 
 int main(int argc, char* argv[]) {
 	// Attempt to initialize SDL
@@ -94,7 +96,15 @@ int main(int argc, char* argv[]) {
 	// Compile the shader and create a mesh
 	// CompileShader();
 	shader = new Shader("Data/2dShader.vert", "Data/2dShader.frag");
-	CreateMeshVAO();
+	myMesh = new Mesh(shader);
+
+	// Create the mesh
+	myMesh->AddVertex(squareVertices[0], colors[0]);
+	myMesh->AddVertex(squareVertices[1], colors[1]);
+	myMesh->AddVertex(squareVertices[2], colors[2]);
+	myMesh->AddVertex(squareVertices[3], colors[3]);
+	myMesh->AddFace(0, 1, 2);
+	myMesh->AddFace(0, 2, 3);
 
 	// Main loop
 	SDL_Event windowEvent;
@@ -106,8 +116,8 @@ int main(int argc, char* argv[]) {
 
 		// Use the program, bind the vao, and draw it
 		shader->Use();
-		glBindVertexArray(vao);
-		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(myMesh->GetVAO());
+		glDrawElements(GL_TRIANGLES, 3*myMesh->GetFaceCount(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
 		// Swap buffers
@@ -122,10 +132,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Delete the program and vao stuff
-	glDeleteBuffers(1, &ebo);
-	glDeleteBuffers(1, &cbo);
-	glDeleteBuffers(1, &vbo);
-	glDeleteVertexArrays(1, &vao);
+	delete myMesh;
 	delete shader;
 
 	// Make sure to destroy the window and quit SDL
@@ -134,43 +141,4 @@ int main(int argc, char* argv[]) {
 	SDL_Quit();
 
 	return 0;
-}
-
-void CreateMeshVAO()
-{
-	// Generate the vertex buffer and the vertex array
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &vbo);
-	glGenBuffers(1, &cbo);
-	glGenBuffers(1, &ebo);
-
-	// Upload vertex data to the vertex buffer
-	glNamedBufferData(vbo, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	// Upload color data to the color buffer
-	glNamedBufferData(cbo, sizeof(colors), colors, GL_STATIC_DRAW);
-
-	// Upload index data to the element buffer
-	glNamedBufferData(ebo, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	// Get the position and color attribute variables
-	GLint posAttrib = shader->GetAttribLocation("position");
-	GLint colorAttrib = shader->GetAttribLocation("color");
-
-	// Enable the position attribute for the vao, make sure it links with the vbo, and format the attrib
-	glEnableVertexArrayAttrib(vao, posAttrib);
-	glVertexArrayAttribBinding(vao, posAttrib, vbo-1);
-	glVertexArrayAttribFormat(vao, posAttrib, 3, GL_FLOAT, GL_FALSE, 0);
-
-	// Enable the color attribute for the vao, make sure it links with the vbo, and format the attrib
-	glEnableVertexArrayAttrib(vao, colorAttrib);
-	glVertexArrayAttribBinding(vao, colorAttrib, cbo-1);
-	glVertexArrayAttribFormat(vao, colorAttrib, 3, GL_FLOAT, GL_FALSE, 0);
-
-	// Bind the buffers to the respective attributes and bind them with the vao
-	glVertexArrayVertexBuffer(vao, posAttrib, vbo, 0, 3*sizeof(float));
-	glVertexArrayVertexBuffer(vao, colorAttrib, cbo, 0, 3 * sizeof(float));
-
-	// Bind the ebo with the vao
-	glVertexArrayElementBuffer(vao, ebo);
 }
