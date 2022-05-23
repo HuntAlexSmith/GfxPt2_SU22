@@ -166,8 +166,8 @@ GLint Shader::GetAttribLocation(std::string attribName) {
 //		Returns the location of the uniform, -1 if it wasn't found
 //*****************************************************************************
 GLint Shader::GetUniformLocation(std::string uniformName) {
-	auto result = attribs_.find(uniformName);
-	if (result == attribs_.end())
+	auto result = uniforms_.find(uniformName);
+	if (result == uniforms_.end())
 		return -1;
 	return result->second;
 }

@@ -58,12 +58,12 @@ GLuint Mesh::GetVAO()
 
 		// Enable the position attribute for the vao
 		glEnableVertexArrayAttrib(vao_, posAttrib);
-		glVertexArrayAttribBinding(vao_, posAttrib, buffers_[VBO] - 1);
+		glVertexArrayAttribBinding(vao_, posAttrib, 0);
 		glVertexArrayAttribFormat(vao_, posAttrib, 4, GL_FLOAT, GL_FALSE, 0);
 
 		// Enable the color attribute for the vao
 		glEnableVertexArrayAttrib(vao_, colorAttrib);
-		glVertexArrayAttribBinding(vao_, colorAttrib, buffers_[CBO] - 1);
+		glVertexArrayAttribBinding(vao_, colorAttrib, 1);
 		glVertexArrayAttribFormat(vao_, colorAttrib, 3, GL_FLOAT, GL_FALSE, 0);
 
 		// Bind buffers to respective attributes 

@@ -45,6 +45,9 @@
     <ClCompile Include="Source\Mesh.cpp">
       <Filter>Source Files\Graphics\Meshes</Filter>
     </ClCompile>
+    <ClCompile Include="Source\GfxMath.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Stub.h">
@@ -58,6 +61,9 @@
     </ClInclude>
     <ClInclude Include="Source\Mesh.h">
       <Filter>Source Files\Graphics\Meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GfxMath.h">
+      <Filter>Source Files\Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

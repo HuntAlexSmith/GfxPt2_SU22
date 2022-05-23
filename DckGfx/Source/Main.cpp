@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include "SDL2/SDL.h"
 #include "glad/glad.h"
-#include "glm/glm.hpp"
+#include "GfxMath.h"
 #include "FileReader.h"
 #include "Shader.h"
 #include "Mesh.h"
@@ -23,10 +23,8 @@ static SDL_GLContext glContext;
 // Triangle vertices and buffers
 Shader* shader;
 Mesh* myMesh;
-GLuint vao;
-GLuint vbo;
-GLuint cbo;
-GLuint ebo;
+
+static float rotation = 0.0f;
 
 glm::vec4 triVertices[] = {
 	glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f),
@@ -45,8 +43,26 @@ glm::vec3 colors[] = {
 	glm::vec3(1.0f, 0.0f, 0.0f),
 	glm::vec3(0.0f, 1.0f, 0.0f),
 	glm::vec3(0.0f, 0.0f, 1.0f),
-	glm::vec3(0.0f, 0.0f, 0.0f)
+	glm::vec3(1.0f, 1.0f, 1.0f)
 };
+
+// Initial Square attributes
+glm::mat4 squareScale = GfxMath::Scale2D(3.0f);
+
+// Camera attributes
+glm::vec4 camRightVec = GfxMath::Vector(1, 0);
+glm::vec4 camUpVec = GfxMath::Vector(0, 1);
+glm::vec4 camBackVec = GfxMath::Vector(0, 0, 1);
+glm::vec4 cameraPos = GfxMath::Point(0, 0);
+float camWidth = 20.0f * (16.0f/9.0f);
+float camHeight = 20.0f;
+
+// Camera matrices
+glm::mat4 cameraMat = GfxMath::Affine(camRightVec, camUpVec, camBackVec, cameraPos);
+glm::mat4 viewMat = GfxMath::AffineInverse(cameraMat);
+
+// To NDC matrix
+glm::mat4 cameraToNDC = GfxMath::Scale(2.0f / camWidth, 2.0f / camHeight);
 
 int main(int argc, char* argv[]) {
 	// Attempt to initialize SDL
@@ -91,7 +107,7 @@ int main(int argc, char* argv[]) {
 	int w, h;
 	SDL_GetWindowSize(windowHandle, &w, &h);
 	glViewport(0, 0, w, h);
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Compile the shader and create a mesh
 	// CompileShader();
@@ -111,13 +127,26 @@ int main(int argc, char* argv[]) {
 	bool quit = false;
 	while (!quit)
 	{
+		rotation += 0.5f;
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Use the program, bind the vao, and draw it
 		shader->Use();
+
+		// Upload values to the uniforms
+		GLint uObjToWorld = shader->GetUniformLocation("objToWorld");
+		GLint uWorldToCam = shader->GetUniformLocation("worldToCam");
+		GLint uCamToNDC = shader->GetUniformLocation("camToNDC");
+
+		glm::mat4 fullTransform = GfxMath::Rotate2D(rotation) * squareScale;
+
+		glUniformMatrix4fv(uObjToWorld, 1, GL_FALSE, &fullTransform[0][0]);
+		glUniformMatrix4fv(uWorldToCam, 1, GL_FALSE, &viewMat[0][0]);
+		glUniformMatrix4fv(uCamToNDC, 1, GL_FALSE, &cameraToNDC[0][0]);
+
 		glBindVertexArray(myMesh->GetVAO());
-		glDrawElements(GL_TRIANGLES, 3*myMesh->GetFaceCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 3 * myMesh->GetFaceCount(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
 		// Swap buffers

@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\FileReader.cpp" />
+    <ClCompile Include="Source\GfxMath.cpp" />
     <ClCompile Include="Source\glad.c" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
@@ -160,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\FileReader.h" />
+    <ClInclude Include="Source\GfxMath.h" />
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\Shader.h" />
     <ClInclude Include="Source\Stub.h" />
