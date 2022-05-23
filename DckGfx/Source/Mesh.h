@@ -15,8 +15,15 @@ public:
 	enum Buffers {
 		VBO,
 		CBO,
-		EBO,
+		edgeEBO,
+		faceEBO,
 		BuffCount
+	};
+
+	struct Edge {
+		unsigned int v1;
+		unsigned int v2;
+		Edge(unsigned int v1, unsigned int v2) : v1(v1), v2(v2) {}
 	};
 
 	struct Face {
@@ -29,26 +36,32 @@ public:
 	Mesh(Shader* shader);
 
 	void AddVertex(glm::vec4 position, glm::vec3 color);
+	void AddEdge(unsigned int v1, unsigned int v2);
 	void AddFace(unsigned int v1, unsigned int v2, unsigned int v3);
 
 	int GetVertexCount();
+	int GetEdgeCount();
 	int GetFaceCount();
 
-	GLuint GetVAO();
+	GLuint GetEdgeVAO();
+	GLuint GetFaceVAO();
 
 	~Mesh();
 
 private:
 
 	Shader* shader_;
+
+	bool edgeIsDirty_;
+	bool faceIsDirty_;
 	
 	std::vector<glm::vec4> vertices_;
 	std::vector<glm::vec3> colors_;
 
+	std::vector<Edge> edges_;
 	std::vector<Face> faces_;
 
 	GLuint buffers_[BuffCount];
 
-	GLuint vao_;
-
+	GLuint edgeVao_, faceVao_;
 };

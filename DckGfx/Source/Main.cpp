@@ -23,6 +23,7 @@ static SDL_GLContext glContext;
 // Triangle vertices and buffers
 Shader* shader;
 Mesh* myMesh;
+bool renderFace = true;
 
 static float rotation = 0.0f;
 
@@ -121,6 +122,10 @@ int main(int argc, char* argv[]) {
 	myMesh->AddVertex(squareVertices[3], colors[3]);
 	myMesh->AddFace(0, 1, 2);
 	myMesh->AddFace(0, 2, 3);
+	myMesh->AddEdge(0, 1);
+	myMesh->AddEdge(1, 2);
+	myMesh->AddEdge(2, 3);
+	myMesh->AddEdge(0, 3);
 
 	// Main loop
 	SDL_Event windowEvent;
@@ -145,9 +150,18 @@ int main(int argc, char* argv[]) {
 		glUniformMatrix4fv(uWorldToCam, 1, GL_FALSE, &viewMat[0][0]);
 		glUniformMatrix4fv(uCamToNDC, 1, GL_FALSE, &cameraToNDC[0][0]);
 
-		glBindVertexArray(myMesh->GetVAO());
-		glDrawElements(GL_TRIANGLES, 3 * myMesh->GetFaceCount(), GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
+		if (renderFace)
+		{
+			glBindVertexArray(myMesh->GetFaceVAO());
+			glDrawElements(GL_TRIANGLES, 3 * myMesh->GetFaceCount(), GL_UNSIGNED_INT, 0);
+			glBindVertexArray(0);
+		}
+		else
+		{
+			glBindVertexArray(myMesh->GetEdgeVAO());
+			glDrawElements(GL_LINES, 2 * myMesh->GetEdgeCount(), GL_UNSIGNED_INT, 0);
+			glBindVertexArray(0);
+		}
 
 		// Swap buffers
 		SDL_GL_SwapWindow(windowHandle);
@@ -155,6 +169,13 @@ int main(int argc, char* argv[]) {
 		// Checking for the window closing event
 		while (SDL_PollEvent(&windowEvent))
 		{
+			if (windowEvent.key.keysym.sym == SDLK_e)
+			{
+				if (renderFace)
+					renderFace = false;
+				else
+					renderFace = true;
+			}
 			if (windowEvent.type == SDL_QUIT)
 				quit = true;
 		}
