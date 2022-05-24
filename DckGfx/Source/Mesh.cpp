@@ -32,9 +32,11 @@ void Mesh::AddVertex(glm::vec4 position, glm::vec3 color)
 	int vertCount = GetVertexCount();
 	glBindBuffer(GL_ARRAY_BUFFER, buffers_[VBO]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * vertCount, &(vertices_[0]), GL_STATIC_DRAW);
+	// glNamedBufferData(buffers_[VBO], vertCount * sizeof(glm::vec4), &(vertices_[0]), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, buffers_[CBO]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertCount, &(colors_[0]), GL_STATIC_DRAW);
+	// glNamedBufferData(buffers_[CBO], vertCount * sizeof(glm::vec3), &(colors_[0]), GL_STATIC_DRAW);
 }
 
 void Mesh::AddEdge(unsigned int v1, unsigned int v2)
@@ -42,6 +44,7 @@ void Mesh::AddEdge(unsigned int v1, unsigned int v2)
 	edges_.push_back(Edge(v1, v2));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers_[edgeEBO]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Edge) * GetEdgeCount(), &(edges_[0]), GL_STATIC_DRAW);
+	// glNamedBufferData(buffers_[edgeEBO], GetEdgeCount() * sizeof(Edge), &(edges_[0]), GL_STATIC_DRAW);
 }
 
 void Mesh::AddFace(unsigned int v1, unsigned int v2, unsigned int v3)
@@ -49,6 +52,7 @@ void Mesh::AddFace(unsigned int v1, unsigned int v2, unsigned int v3)
 	faces_.push_back(Face(v1, v2, v3));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers_[faceEBO]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Face) * GetFaceCount(), &(faces_[0]), GL_STATIC_DRAW);
+	// glNamedBufferData(buffers_[edgeEBO], GetFaceCount() * sizeof(Face), &(faces_[0]), GL_STATIC_DRAW);
 }
 
 int Mesh::GetVertexCount()
@@ -78,17 +82,17 @@ GLuint Mesh::GetEdgeVAO()
 		glBindVertexArray(edgeVao_);
 
 		glBindBuffer(GL_ARRAY_BUFFER, buffers_[VBO]);
-		glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
-		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(posAttrib, 4, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(posAttrib);
 
 		glBindBuffer(GL_ARRAY_BUFFER, buffers_[CBO]);
-		glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
-		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(colorAttrib, 3, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(colorAttrib);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers_[edgeEBO]);
 
 		glBindVertexArray(0);
-
+		
 		/*
 		glEnableVertexArrayAttrib(edgeVao_, posAttrib);
 		glVertexArrayAttribBinding(edgeVao_, posAttrib, 0);
@@ -96,7 +100,7 @@ GLuint Mesh::GetEdgeVAO()
 
 		// Enable the color attribute for the vao
 		glEnableVertexArrayAttrib(edgeVao_, colorAttrib);
-		glVertexArrayAttribBinding(edgeVao_, colorAttrib, 1);
+		glVertexArrayAttribBinding(edgeVao_, colorAttrib, 0);
 		glVertexArrayAttribFormat(edgeVao_, colorAttrib, 3, GL_FLOAT, GL_FALSE, 0);
 
 		// Bind buffers to respective attributes 
@@ -126,12 +130,12 @@ GLuint Mesh::GetFaceVAO()
 		glBindVertexArray(faceVao_);
 
 		glBindBuffer(GL_ARRAY_BUFFER, buffers_[VBO]);
-		glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
-		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(posAttrib, 4, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(posAttrib);
 
 		glBindBuffer(GL_ARRAY_BUFFER, buffers_[CBO]);
-		glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
-		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(colorAttrib, 3, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(colorAttrib);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers_[faceEBO]);
 
@@ -145,7 +149,7 @@ GLuint Mesh::GetFaceVAO()
 
 		// Enable the color attribute for the vao
 		glEnableVertexArrayAttrib(faceVao_, colorAttrib);
-		glVertexArrayAttribBinding(faceVao_, colorAttrib, 1);
+		glVertexArrayAttribBinding(faceVao_, colorAttrib, 0);
 		glVertexArrayAttribFormat(faceVao_, colorAttrib, 3, GL_FLOAT, GL_FALSE, 0);
 
 		// Bind buffers to respective attributes 

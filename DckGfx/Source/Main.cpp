@@ -211,7 +211,6 @@ int main(int argc, char* argv[]) {
 		glUniformMatrix4fv(uWorldToCam, 1, GL_FALSE, &view3DMat[0][0]);
 		glUniformMatrix4fv(uPersp, 1, GL_FALSE, &perspMat[0][0]);
 
-		
 		if (renderFace)
 		{
 			glBindVertexArray(my3DMesh->GetFaceVAO());

@@ -114,7 +114,7 @@ Shader::Shader(const char* vertFile, const char* fragFile) : program_(0), attrib
 	for (GLint i = 0; i < attribCount; ++i)
 	{
 		glGetActiveAttrib(program_, i, bufSize, &length, &size, &type, varName);
-		std::pair<std::string, GLint> attribToAdd(std::string(varName), i);
+		std::pair<std::string, GLint> attribToAdd(std::string(varName), glGetAttribLocation(program_, varName));
 		attribs_.insert(attribToAdd);
 	}
 
@@ -125,7 +125,7 @@ Shader::Shader(const char* vertFile, const char* fragFile) : program_(0), attrib
 	for (GLint i = 0; i < uniformCount; ++i)
 	{
 		glGetActiveUniform(program_, i, bufSize, &length, &size, &type, varName);
-		std::pair<std::string, GLint> uniformToAdd(std::string(varName), i);
+		std::pair<std::string, GLint> uniformToAdd(std::string(varName), glGetUniformLocation(program_, varName));
 		uniforms_.insert(uniformToAdd);
 	}
 }
