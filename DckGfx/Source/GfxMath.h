@@ -24,4 +24,6 @@ namespace GfxMath {
 
 	glm::mat4 Affine(const glm::vec4& v1, const glm::vec4& v2, const glm::vec4& v3, const glm::vec4& v4);
 	glm::mat4 AffineInverse(const glm::mat4& affine);
+
+	glm::vec4 CrossProduct(glm::vec4& u, glm::vec4& v);
 }

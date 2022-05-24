@@ -24,6 +24,7 @@ static SDL_GLContext glContext;
 Shader* shader;
 Mesh* myMesh;
 Mesh* my3DMesh;
+NormalMesh* myNormMesh;
 bool renderFace = true;
 
 static float rotation = 0.0f;
@@ -186,14 +187,18 @@ int main(int argc, char* argv[]) {
 		my3DMesh->AddFace(cubeFaces[i].v1, cubeFaces[i].v2, cubeFaces[i].v3);
 	}
 
+	myNormMesh = new NormalMesh(my3DMesh);
+
 	// Main loop
 	SDL_Event windowEvent;
 	bool quit = false;
 	while (!quit)
 	{
 		rotation += 0.5f;
+		if (rotation > 360.0f)
+			rotation = 0.0f;
 		// Clear the screen
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		glClearDepth(1);
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
@@ -204,12 +209,20 @@ int main(int argc, char* argv[]) {
 		GLint uObjToWorld = shader->GetUniformLocation("objToWorld");
 		GLint uWorldToCam = shader->GetUniformLocation("worldToCam");
 		GLint uPersp = shader->GetUniformLocation("perspMat");
+		GLint uNormMat = shader->GetUniformLocation("normMat");
+		GLint uIgNorm = shader->GetUniformLocation("ignoreNorm");
 
-		glm::mat4 fullTrans = GfxMath::Rotate3D(xAxis, rotation) * cubeScale;
+		glm::vec4 move = GfxMath::Point(3, 0, 0);
+		glm::mat4 fullTrans = GfxMath::Translate(move) * GfxMath::Rotate3D(xAxis, rotation) * cubeScale;
+
+		glm::vec4 otherMove = GfxMath::Point(-3, 0, 0);
+		glm::mat4 otherTrans = GfxMath::Translate(otherMove) * GfxMath::Rotate3D(xAxis, rotation) * cubeScale;
+		glm::mat4 normMat = GfxMath::AffineInverse(otherTrans);
 
 		glUniformMatrix4fv(uObjToWorld, 1, GL_FALSE, &fullTrans[0][0]);
 		glUniformMatrix4fv(uWorldToCam, 1, GL_FALSE, &view3DMat[0][0]);
 		glUniformMatrix4fv(uPersp, 1, GL_FALSE, &perspMat[0][0]);
+		glUniform1i(uIgNorm, 1);
 
 		if (renderFace)
 		{
@@ -223,6 +236,16 @@ int main(int argc, char* argv[]) {
 			glDrawElements(GL_LINES, 2 * my3DMesh->GetEdgeCount(), GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);
 		}
+
+		glUniformMatrix4fv(uObjToWorld, 1, GL_FALSE, &otherTrans[0][0]);
+		glUniformMatrix4fv(uNormMat, 1, GL_FALSE, &normMat[0][0]);
+		glUniform1i(uIgNorm, 0);
+
+		glBindVertexArray(myNormMesh->GetNormalFaceVAO());
+		glDrawElements(GL_TRIANGLES, 3 * myNormMesh->GetFaceCount(), GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+
+		assert(glGetError() == GL_NO_ERROR);
 
 		// Swap buffers
 		SDL_GL_SwapWindow(windowHandle);

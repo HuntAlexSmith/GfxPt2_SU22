@@ -7,7 +7,7 @@
 //*****************************************************************************
 
 #include "Shader.h"
-#include "glm/glm.hpp"
+#include "GfxMath.h"
 #include <vector>
 
 class Mesh {
@@ -39,14 +39,25 @@ public:
 	void AddEdge(unsigned int v1, unsigned int v2);
 	void AddFace(unsigned int v1, unsigned int v2, unsigned int v3);
 
+	std::pair<glm::vec4, glm::vec3> GetVertex(unsigned int v);
+	Face GetFace(unsigned int i);
+
 	int GetVertexCount();
 	int GetEdgeCount();
 	int GetFaceCount();
 
+	glm::vec4* GetVertices();
+	glm::vec3* GetColors();
+	Mesh::Face* GetFaces();
+
 	GLuint GetEdgeVAO();
 	GLuint GetFaceVAO();
 
-	~Mesh();
+	GLuint GetBuffer(Buffers buff);
+
+	Shader* GetShader();
+
+	virtual ~Mesh();
 
 private:
 
@@ -61,4 +72,21 @@ private:
 	GLuint buffers_[BuffCount];
 
 	GLuint edgeVao_, faceVao_;
+};
+
+class NormalMesh : public Mesh {
+public:
+
+	NormalMesh(Mesh* mesh);
+
+	GLuint GetNormalFaceVAO();
+
+	~NormalMesh();
+
+private:
+
+	std::vector<glm::vec4> normals_;
+	GLuint normalBuffer_;
+	GLuint normalFaceVao_;
+
 };

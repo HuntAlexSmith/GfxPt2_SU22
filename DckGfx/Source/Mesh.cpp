@@ -41,6 +41,10 @@ void Mesh::AddVertex(glm::vec4 position, glm::vec3 color)
 
 void Mesh::AddEdge(unsigned int v1, unsigned int v2)
 {
+	int vertCount = GetVertexCount();
+	if (v1 > vertCount || v2 > vertCount)
+		return;
+
 	edges_.push_back(Edge(v1, v2));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers_[edgeEBO]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Edge) * GetEdgeCount(), &(edges_[0]), GL_STATIC_DRAW);
@@ -55,9 +59,31 @@ void Mesh::AddFace(unsigned int v1, unsigned int v2, unsigned int v3)
 	// glNamedBufferData(buffers_[edgeEBO], GetFaceCount() * sizeof(Face), &(faces_[0]), GL_STATIC_DRAW);
 }
 
+std::pair<glm::vec4, glm::vec3> Mesh::GetVertex(unsigned int v)
+{
+	if (v < GetVertexCount())
+		return std::pair<glm::vec4, glm::vec3>(vertices_[v], colors_[v]);
+	return std::pair<glm::vec4, glm::vec3>(glm::vec4(0), glm::vec3(0));
+}
+
 int Mesh::GetVertexCount()
 {
 	return static_cast<int>(vertices_.size());
+}
+
+glm::vec4* Mesh::GetVertices()
+{
+	return &(vertices_[0]);
+}
+
+glm::vec3* Mesh::GetColors()
+{
+	return &(colors_[0]);
+}
+
+Mesh::Face* Mesh::GetFaces()
+{
+	return &(faces_[0]);
 }
 
 int Mesh::GetEdgeCount()
@@ -68,6 +94,23 @@ int Mesh::GetEdgeCount()
 int Mesh::GetFaceCount()
 {
 	return faces_.size();
+}
+
+Mesh::Face Mesh::GetFace(unsigned int i)
+{
+	if (i < GetFaceCount())
+		return faces_[i];
+	return Mesh::Face(0, 0, 0);
+}
+
+Shader* Mesh::GetShader()
+{
+	return shader_;
+}
+
+GLuint Mesh::GetBuffer(Buffers buff)
+{
+	return buffers_[buff];
 }
 
 GLuint Mesh::GetEdgeVAO()
@@ -177,4 +220,88 @@ Mesh::~Mesh()
 
 	if (edgeVao_)
 		glDeleteVertexArrays(1, &edgeVao_);
+}
+
+NormalMesh::NormalMesh(Mesh* mesh) : Mesh(mesh->GetShader()), normals_(), normalBuffer_(0), normalFaceVao_(0)
+{
+	glGenBuffers(1, &normalBuffer_);
+	int faceCount = mesh->GetFaceCount();
+	for (int i = 0; i < faceCount; ++i)
+	{
+		// Add the new face
+		AddFace(i * 3, i * 3 + 1, i * 3 + 2);
+
+		// Get the vertices from the original mesh
+		Face origMeshFace = mesh->GetFace(i);
+
+		std::pair<glm::vec4, glm::vec3> v1 = mesh->GetVertex(origMeshFace.v1);
+		std::pair<glm::vec4, glm::vec3> v2 = mesh->GetVertex(origMeshFace.v2);
+		std::pair<glm::vec4, glm::vec3> v3 = mesh->GetVertex(origMeshFace.v3);
+
+		AddVertex(v1.first, v1.second);
+		AddVertex(v2.first, v2.second);
+		AddVertex(v3.first, v3.second);
+
+		// Calculate normals
+		glm::vec4 firstVec = v2.first - v1.first;
+		glm::vec4 secondVec = v3.first - v1.first;
+		glm::vec4 normal = GfxMath::CrossProduct(firstVec, secondVec);
+		normals_.push_back(normal);
+		normals_.push_back(normal);
+		normals_.push_back(normal);
+	}
+}
+
+GLuint NormalMesh::GetNormalFaceVAO()
+{
+	if (!normalFaceVao_)
+	{
+		// Upload vertex, color, normal, and face data
+		glBindBuffer(GL_ARRAY_BUFFER, GetBuffer(VBO));
+		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * GetVertexCount(), GetVertices(), GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ARRAY_BUFFER, GetBuffer(CBO));
+		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * GetVertexCount(), GetColors(), GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ARRAY_BUFFER, normalBuffer_);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * normals_.size(), &(normals_[0]), GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GetBuffer(faceEBO));
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Face) * GetFaceCount(), GetFaces(), GL_STATIC_DRAW);
+
+		// Generate the vertex array and bind it
+		glGenVertexArrays(1, &normalFaceVao_);
+
+		glBindVertexArray(normalFaceVao_);
+
+		// Get Attribute locations
+		GLint posAttrib = GetShader()->GetAttribLocation("position");
+		GLint colorAttrib = GetShader()->GetAttribLocation("color");
+		GLint normalAttrib = GetShader()->GetAttribLocation("normal");
+
+		// Enable attributes
+		glBindBuffer(GL_ARRAY_BUFFER, GetBuffer(VBO));
+		glVertexAttribPointer(posAttrib, 4, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(posAttrib);
+
+		glBindBuffer(GL_ARRAY_BUFFER, GetBuffer(CBO));
+		glVertexAttribPointer(colorAttrib, 3, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(colorAttrib);
+
+		glBindBuffer(GL_ARRAY_BUFFER, normalBuffer_);
+		glVertexAttribPointer(normalAttrib, 4, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(normalAttrib);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GetBuffer(faceEBO));
+		glBindVertexArray(0);
+	}
+	return normalFaceVao_;
+}
+
+NormalMesh::~NormalMesh()
+{
+	glDeleteBuffers(1, &normalBuffer_);
+
+	if (normalFaceVao_)
+		glDeleteVertexArrays(1, &normalFaceVao_);
 }
