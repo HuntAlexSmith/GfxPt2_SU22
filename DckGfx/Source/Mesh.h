@@ -51,9 +51,6 @@ public:
 private:
 
 	Shader* shader_;
-
-	bool edgeIsDirty_;
-	bool faceIsDirty_;
 	
 	std::vector<glm::vec4> vertices_;
 	std::vector<glm::vec3> colors_;

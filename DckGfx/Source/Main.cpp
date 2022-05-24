@@ -23,47 +23,107 @@ static SDL_GLContext glContext;
 // Triangle vertices and buffers
 Shader* shader;
 Mesh* myMesh;
+Mesh* my3DMesh;
 bool renderFace = true;
 
 static float rotation = 0.0f;
 
-glm::vec4 triVertices[] = {
-	glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f),
-	glm::vec4(0.5f, -0.5f, 0.0f, 1.0f),
-	glm::vec4(0.0f, 0.5f, 0.0f, 1.0f),
+static const glm::vec4 cubeVertices[] = {
+	GfxMath::Point(1.0f, 1.0f, 1.0f),
+	GfxMath::Point(1.0f, 1.0f, -1.0f),
+	GfxMath::Point(1.0f, -1.0f, 1.0f),
+	GfxMath::Point(1.0f, -1.0f, -1.0f),
+	GfxMath::Point(-1.0f, 1.0f, 1.0f),
+	GfxMath::Point(-1.0f, 1.0f, -1.0f),
+	GfxMath::Point(-1.0f, -1.0f, 1.0f),
+	GfxMath::Point(-1.0f, -1.0f, -1.0f)
 };
 
-glm::vec4 squareVertices[] = {
+static const glm::vec3 cubeColors[] = {
+	glm::vec3(1.0f, 0.0f, 0.0f),
+	glm::vec3(0.0f, 1.0f, 0.0f),
+	glm::vec3(0.0f, 0.0f, 1.0f),
+	glm::vec3(1.0f, 1.0f, 0.0f),
+	glm::vec3(1.0f, 1.0f, 1.0f),
+	glm::vec3(1.0f, 0.0f, 1.0f),
+	glm::vec3(0.0f, 1.0f, 1.0f),
+	glm::vec3(1.0f, 1.0f, 1.0f)
+};
+
+static const Mesh::Edge cubeEdges[] = {
+	Mesh::Edge(0, 1),
+	Mesh::Edge(1, 3),
+	Mesh::Edge(2, 3),
+	Mesh::Edge(0, 2),
+	Mesh::Edge(0, 4),
+	Mesh::Edge(2, 6),
+	Mesh::Edge(3, 7),
+	Mesh::Edge(1, 5),
+	Mesh::Edge(4, 5),
+	Mesh::Edge(5, 7),
+	Mesh::Edge(6, 7),
+	Mesh::Edge(4, 6)
+};
+
+// Continue this later
+static const Mesh::Face cubeFaces[] = {
+	Mesh::Face(0, 3, 1),
+	Mesh::Face(0, 2, 3),
+	Mesh::Face(0, 5, 4),
+	Mesh::Face(0, 1, 5),
+	Mesh::Face(3, 7, 5),
+	Mesh::Face(1, 3, 5),
+	Mesh::Face(2, 6, 7),
+	Mesh::Face(2, 7, 3),
+	Mesh::Face(0, 6, 2),
+	Mesh::Face(0, 4, 6),
+	Mesh::Face(4, 7, 6),
+	Mesh::Face(4, 5, 7)
+};
+
+static glm::vec4 squareVertices[] = {
 	glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f),
 	glm::vec4(0.5f, -0.5f, 0.0f, 1.0f),
 	glm::vec4(0.5f, 0.5f, 0.0f, 1.0f),
 	glm::vec4(-0.5f, 0.5f, 0.0f, 1.0f)
 };
 
-glm::vec3 colors[] = {
+static glm::vec3 colors[] = {
 	glm::vec3(1.0f, 0.0f, 0.0f),
 	glm::vec3(0.0f, 1.0f, 0.0f),
 	glm::vec3(0.0f, 0.0f, 1.0f),
 	glm::vec3(1.0f, 1.0f, 1.0f)
 };
 
-// Initial Square attributes
-glm::mat4 squareScale = GfxMath::Scale2D(3.0f);
+// Initial Cube Attributes
+static glm::vec4 xAxis = GfxMath::Vector(1, 1, 1);
+static glm::vec4 yAxis = GfxMath::Vector(0, 1, 0);
+static glm::vec4 zAxis = GfxMath::Vector(0, 0, 1);
+static glm::vec4 center = GfxMath::Point(0, 0, 0);
+static glm::mat4 cubeScale = GfxMath::Scale3D(1.f);
 
-// Camera attributes
-glm::vec4 camRightVec = GfxMath::Vector(1, 0);
-glm::vec4 camUpVec = GfxMath::Vector(0, 1);
-glm::vec4 camBackVec = GfxMath::Vector(0, 0, 1);
-glm::vec4 cameraPos = GfxMath::Point(0, 0);
-float camWidth = 20.0f * (16.0f/9.0f);
-float camHeight = 20.0f;
+// 3D Camera Attributes
+static glm::vec4 rightVec = GfxMath::Vector(1, 0, 0);
+static glm::vec4 upVec = GfxMath::Vector(0, 1, 0);
+static glm::vec4 backVec = GfxMath::Vector(0, 0, -1);
+static glm::vec4 camPos = GfxMath::Point(0.0f, 0.0f, -10.0f);
+static glm::mat4 camera3DMat = GfxMath::Affine(rightVec, upVec, backVec, camPos);
+static glm::mat4 view3DMat = GfxMath::AffineInverse(camera3DMat);
 
-// Camera matrices
-glm::mat4 cameraMat = GfxMath::Affine(camRightVec, camUpVec, camBackVec, cameraPos);
-glm::mat4 viewMat = GfxMath::AffineInverse(cameraMat);
+// Calculate the perspective matrix
+static float nearDist = 1.0f;
+static float farDist = 100.0f;
+static float camDist = nearDist + (farDist - nearDist) / 2.0f;
+static float cam3DWidth = 2 * camDist;
+static float cam3DHeight = cam3DWidth / (16.0f / 9.0f);
 
-// To NDC matrix
-glm::mat4 cameraToNDC = GfxMath::Scale(2.0f / camWidth, 2.0f / camHeight);
+static glm::mat4 perspMat(
+	2*camDist/cam3DWidth, 0, 0, 0,
+	0, 2*camDist/cam3DHeight, 0, 0,
+	0, 0, (nearDist+farDist)/(nearDist-farDist), -1,
+	0, 0, (2*nearDist*farDist)/(nearDist-farDist), 0
+);
+
 
 int main(int argc, char* argv[]) {
 	// Attempt to initialize SDL
@@ -100,6 +160,7 @@ int main(int argc, char* argv[]) {
 		SDL_Quit();
 		return 1;
 	}
+	glEnable(GL_DEPTH_TEST);
 
 	// Set VSync
 	SDL_GL_SetSwapInterval(1);
@@ -108,24 +169,22 @@ int main(int argc, char* argv[]) {
 	int w, h;
 	SDL_GetWindowSize(windowHandle, &w, &h);
 	glViewport(0, 0, w, h);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Compile the shader and create a mesh
 	// CompileShader();
-	shader = new Shader("Data/2dShader.vert", "Data/2dShader.frag");
-	myMesh = new Mesh(shader);
+	shader = new Shader("Data/3dShader.vert", "Data/3dShader.frag");
+	my3DMesh = new Mesh(shader);
 
-	// Create the mesh
-	myMesh->AddVertex(squareVertices[0], colors[0]);
-	myMesh->AddVertex(squareVertices[1], colors[1]);
-	myMesh->AddVertex(squareVertices[2], colors[2]);
-	myMesh->AddVertex(squareVertices[3], colors[3]);
-	myMesh->AddFace(0, 1, 2);
-	myMesh->AddFace(0, 2, 3);
-	myMesh->AddEdge(0, 1);
-	myMesh->AddEdge(1, 2);
-	myMesh->AddEdge(2, 3);
-	myMesh->AddEdge(0, 3);
+	// Create the 3D Mesh
+	for (int i = 0; i < 8; ++i)
+	{
+		my3DMesh->AddVertex(cubeVertices[i], cubeColors[i]);
+	}
+	for (int i = 0; i < 12; ++i)
+	{
+		my3DMesh->AddEdge(cubeEdges[i].v1, cubeEdges[i].v2);
+		my3DMesh->AddFace(cubeFaces[i].v1, cubeFaces[i].v2, cubeFaces[i].v3);
+	}
 
 	// Main loop
 	SDL_Event windowEvent;
@@ -134,7 +193,9 @@ int main(int argc, char* argv[]) {
 	{
 		rotation += 0.5f;
 		// Clear the screen
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearDepth(1);
+		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 		// Use the program, bind the vao, and draw it
 		shader->Use();
@@ -142,24 +203,25 @@ int main(int argc, char* argv[]) {
 		// Upload values to the uniforms
 		GLint uObjToWorld = shader->GetUniformLocation("objToWorld");
 		GLint uWorldToCam = shader->GetUniformLocation("worldToCam");
-		GLint uCamToNDC = shader->GetUniformLocation("camToNDC");
+		GLint uPersp = shader->GetUniformLocation("perspMat");
 
-		glm::mat4 fullTransform = GfxMath::Rotate2D(rotation) * squareScale;
+		glm::mat4 fullTrans = GfxMath::Rotate3D(xAxis, rotation) * cubeScale;
 
-		glUniformMatrix4fv(uObjToWorld, 1, GL_FALSE, &fullTransform[0][0]);
-		glUniformMatrix4fv(uWorldToCam, 1, GL_FALSE, &viewMat[0][0]);
-		glUniformMatrix4fv(uCamToNDC, 1, GL_FALSE, &cameraToNDC[0][0]);
+		glUniformMatrix4fv(uObjToWorld, 1, GL_FALSE, &fullTrans[0][0]);
+		glUniformMatrix4fv(uWorldToCam, 1, GL_FALSE, &view3DMat[0][0]);
+		glUniformMatrix4fv(uPersp, 1, GL_FALSE, &perspMat[0][0]);
 
+		
 		if (renderFace)
 		{
-			glBindVertexArray(myMesh->GetFaceVAO());
-			glDrawElements(GL_TRIANGLES, 3 * myMesh->GetFaceCount(), GL_UNSIGNED_INT, 0);
+			glBindVertexArray(my3DMesh->GetFaceVAO());
+			glDrawElements(GL_TRIANGLES, 3 * my3DMesh->GetFaceCount(), GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);
 		}
 		else
 		{
-			glBindVertexArray(myMesh->GetEdgeVAO());
-			glDrawElements(GL_LINES, 2 * myMesh->GetEdgeCount(), GL_UNSIGNED_INT, 0);
+			glBindVertexArray(my3DMesh->GetEdgeVAO());
+			glDrawElements(GL_LINES, 2 * my3DMesh->GetEdgeCount(), GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);
 		}
 
@@ -182,7 +244,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Delete the program and vao stuff
-	delete myMesh;
+	delete my3DMesh;
 	delete shader;
 
 	// Make sure to destroy the window and quit SDL

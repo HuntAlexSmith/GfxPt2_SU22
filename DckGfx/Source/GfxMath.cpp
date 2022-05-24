@@ -19,7 +19,7 @@ glm::vec4 GfxMath::Vector(float x, float y, float z)
 	return glm::vec4(x, y, z, 0);
 }
 
-glm::mat4 GfxMath::Translate(glm::vec4& v)
+glm::mat4 GfxMath::Translate(const glm::vec4& v)
 {
 	glm::mat4 result(1);
 	result[3][0] = v.x;
@@ -69,12 +69,43 @@ glm::mat4 GfxMath::Rotate2D(float angle)
 	return result;
 }
 
-glm::mat4 GfxMath::Affine(glm::vec4& v1, glm::vec4& v2, glm::vec4& v3, glm::vec4& v4)
+glm::mat4 GfxMath::Rotate3D(const glm::vec4 &rotVec, float angle)
+{
+	// Convert the angle to radians
+	float radians = glm::radians(angle);
+
+	// Calculate the first matrix
+	glm::mat3 firstMat(cosf(radians));
+
+	// Calculate the second matrix
+	glm::mat3 secondMat(
+			rotVec.x * rotVec.x, rotVec.y * rotVec.x, rotVec.z * rotVec.x,
+			rotVec.x * rotVec.y, rotVec.y * rotVec.y, rotVec.z * rotVec.y,
+			rotVec.x * rotVec.z, rotVec.y * rotVec.z, rotVec.z * rotVec.z
+		);
+	float vecLength = glm::length(rotVec);
+	float secCoeff = (1.0f - cosf(radians)) / (vecLength * vecLength);
+	secondMat = secCoeff * secondMat;
+
+	// Calculate the third matrix
+	glm::mat3 thirdMat(
+		0, rotVec.z, -rotVec.y,
+		-rotVec.z, 0, rotVec.x,
+		rotVec.y, -rotVec.x, 0
+	);
+	float thirdCoeff = sinf(radians) / vecLength;
+	thirdMat = thirdCoeff * thirdMat;
+
+	glm::mat4 result = glm::mat4(firstMat + secondMat + thirdMat);
+	return result;
+}
+
+glm::mat4 GfxMath::Affine(const glm::vec4& v1, const glm::vec4& v2, const glm::vec4& v3, const glm::vec4& v4)
 {
 	return glm::mat4(v1, v2, v3, v4);
 }
 
-glm::mat4 GfxMath::AffineInverse(glm::mat4& affine)
+glm::mat4 GfxMath::AffineInverse(const glm::mat4& affine)
 {
 	// Inverse the linear part of the matrix
 	glm::mat4 linearInvTrans = glm::mat4(

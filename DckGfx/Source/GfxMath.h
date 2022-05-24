@@ -13,15 +13,15 @@ namespace GfxMath {
 	glm::vec4 Point(float x, float y, float z=0);
 	glm::vec4 Vector(float x, float y, float z=0);
 
-	glm::mat4 Translate(glm::vec4 &v);
+	glm::mat4 Translate(const glm::vec4 &v);
 
 	glm::mat4 Scale2D(float s);
 	glm::mat4 Scale3D(float s);
 	glm::mat4 Scale(float sx, float sy, float sz = 1);
 
 	glm::mat4 Rotate2D(float angle);
-	// glm::mat4 Rotate3D (Implement this later when needed
+	glm::mat4 Rotate3D(const glm::vec4 &rotVec, float angle);
 
-	glm::mat4 Affine(glm::vec4& v1, glm::vec4& v2, glm::vec4& v3, glm::vec4& v4);
-	glm::mat4 AffineInverse(glm::mat4& affine);
+	glm::mat4 Affine(const glm::vec4& v1, const glm::vec4& v2, const glm::vec4& v3, const glm::vec4& v4);
+	glm::mat4 AffineInverse(const glm::mat4& affine);
 }
