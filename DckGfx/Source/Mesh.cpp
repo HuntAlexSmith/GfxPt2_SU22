@@ -7,7 +7,12 @@
 
 #include "Mesh.h"
 
-Mesh::Mesh(Shader* shader) : shader_(shader),
+static GLint posAttribLocation = 0;
+static GLint colorAttribLocation = 1;
+static GLint normalAttribLocation = 2;
+
+Mesh::Mesh() : posAttrib_(posAttribLocation),
+	colorAttrib_(colorAttribLocation),
 	vertices_(),
 	colors_(),
 	edges_(),
@@ -103,11 +108,6 @@ Mesh::Face Mesh::GetFace(unsigned int i)
 	return Mesh::Face(0, 0, 0);
 }
 
-Shader* Mesh::GetShader()
-{
-	return shader_;
-}
-
 GLuint Mesh::GetBuffer(Buffers buff)
 {
 	return buffers_[buff];
@@ -117,20 +117,17 @@ GLuint Mesh::GetEdgeVAO()
 {
 	if (!edgeVao_)
 	{
-		GLint posAttrib = shader_->GetAttribLocation("position");
-		GLint colorAttrib = shader_->GetAttribLocation("color");
-
 		glGenVertexArrays(1, &edgeVao_);
 
 		glBindVertexArray(edgeVao_);
 
 		glBindBuffer(GL_ARRAY_BUFFER, buffers_[VBO]);
-		glVertexAttribPointer(posAttrib, 4, GL_FLOAT, false, 0, 0);
-		glEnableVertexAttribArray(posAttrib);
+		glVertexAttribPointer(posAttrib_, 4, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(posAttrib_);
 
 		glBindBuffer(GL_ARRAY_BUFFER, buffers_[CBO]);
-		glVertexAttribPointer(colorAttrib, 3, GL_FLOAT, false, 0, 0);
-		glEnableVertexAttribArray(colorAttrib);
+		glVertexAttribPointer(colorAttrib_, 3, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(colorAttrib_);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers_[edgeEBO]);
 
@@ -166,19 +163,15 @@ GLuint Mesh::GetFaceVAO()
 		// Generate the VAO and all the buffers
 		glGenVertexArrays(1, &faceVao_);
 
-		// Get position and color attrib locations
-		GLint posAttrib = shader_->GetAttribLocation("position");
-		GLint colorAttrib = shader_->GetAttribLocation("color");
-
 		glBindVertexArray(faceVao_);
 
 		glBindBuffer(GL_ARRAY_BUFFER, buffers_[VBO]);
-		glVertexAttribPointer(posAttrib, 4, GL_FLOAT, false, 0, 0);
-		glEnableVertexAttribArray(posAttrib);
+		glVertexAttribPointer(posAttrib_, 4, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(posAttrib_);
 
 		glBindBuffer(GL_ARRAY_BUFFER, buffers_[CBO]);
-		glVertexAttribPointer(colorAttrib, 3, GL_FLOAT, false, 0, 0);
-		glEnableVertexAttribArray(colorAttrib);
+		glVertexAttribPointer(colorAttrib_, 3, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(colorAttrib_);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers_[faceEBO]);
 
@@ -207,6 +200,16 @@ GLuint Mesh::GetFaceVAO()
 	return faceVao_;
 }
 
+GLint Mesh::GetPositionAttrib()
+{
+	return posAttrib_;
+}
+
+GLint Mesh::GetColorAttrib()
+{
+	return colorAttrib_;
+}
+
 Mesh::~Mesh()
 {
 	// Delete all the buffers here if needed
@@ -220,9 +223,14 @@ Mesh::~Mesh()
 
 	if (edgeVao_)
 		glDeleteVertexArrays(1, &edgeVao_);
+
+	faces_.clear();
+	edges_.clear();
+	colors_.clear();
+	vertices_.clear();
 }
 
-NormalMesh::NormalMesh(Mesh* mesh) : Mesh(mesh->GetShader()), normals_(), normalBuffer_(0), normalFaceVao_(0)
+NormalMesh::NormalMesh(Mesh* mesh) : Mesh(), normalAttrib_(normalAttribLocation), normals_(), normalBuffer_(0), normalFaceVao_(0)
 {
 	glGenBuffers(1, &normalBuffer_);
 	int faceCount = mesh->GetFaceCount();
@@ -274,10 +282,9 @@ GLuint NormalMesh::GetNormalFaceVAO()
 
 		glBindVertexArray(normalFaceVao_);
 
-		// Get Attribute locations
-		GLint posAttrib = GetShader()->GetAttribLocation("position");
-		GLint colorAttrib = GetShader()->GetAttribLocation("color");
-		GLint normalAttrib = GetShader()->GetAttribLocation("normal");
+		// Get position and color attrib from base
+		GLint posAttrib = GetPositionAttrib();
+		GLint colorAttrib = GetColorAttrib();
 
 		// Enable attributes
 		glBindBuffer(GL_ARRAY_BUFFER, GetBuffer(VBO));
@@ -289,8 +296,8 @@ GLuint NormalMesh::GetNormalFaceVAO()
 		glEnableVertexAttribArray(colorAttrib);
 
 		glBindBuffer(GL_ARRAY_BUFFER, normalBuffer_);
-		glVertexAttribPointer(normalAttrib, 4, GL_FLOAT, false, 0, 0);
-		glEnableVertexAttribArray(normalAttrib);
+		glVertexAttribPointer(normalAttrib_, 4, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(normalAttrib_);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GetBuffer(faceEBO));
 		glBindVertexArray(0);

@@ -10,6 +10,12 @@
 #include "GfxMath.h"
 #include <vector>
 
+enum RenderType {
+	Points,
+	Lines,
+	Triangles
+};
+
 class Mesh {
 public:
 	enum Buffers {
@@ -33,7 +39,7 @@ public:
 		Face(unsigned int v1, unsigned int v2, unsigned int v3) : v1(v1), v2(v2), v3(v3) {}
 	};
 
-	Mesh(Shader* shader);
+	Mesh();
 
 	void AddVertex(glm::vec4 position, glm::vec3 color);
 	void AddEdge(unsigned int v1, unsigned int v2);
@@ -53,15 +59,17 @@ public:
 	GLuint GetEdgeVAO();
 	GLuint GetFaceVAO();
 
-	GLuint GetBuffer(Buffers buff);
+	GLint GetPositionAttrib();
+	GLint GetColorAttrib();
 
-	Shader* GetShader();
+	GLuint GetBuffer(Buffers buff);
 
 	virtual ~Mesh();
 
 private:
 
-	Shader* shader_;
+	GLint posAttrib_;
+	GLint colorAttrib_;
 	
 	std::vector<glm::vec4> vertices_;
 	std::vector<glm::vec3> colors_;
@@ -85,6 +93,7 @@ public:
 
 private:
 
+	GLint normalAttrib_;
 	std::vector<glm::vec4> normals_;
 	GLuint normalBuffer_;
 	GLuint normalFaceVao_;

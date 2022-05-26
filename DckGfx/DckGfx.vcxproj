@@ -151,20 +151,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Engine.cpp" />
     <ClCompile Include="Source\FileReader.cpp" />
     <ClCompile Include="Source\GfxMath.cpp" />
     <ClCompile Include="Source\glad.c" />
+    <ClCompile Include="Source\GraphicsSystem.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
+    <ClCompile Include="Source\RenderSystem.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\Stub.cpp" />
+    <ClCompile Include="Source\System.cpp" />
+    <ClCompile Include="Source\WindowSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Engine.h" />
     <ClInclude Include="Source\FileReader.h" />
     <ClInclude Include="Source\GfxMath.h" />
+    <ClInclude Include="Source\GraphicsSystem.h" />
     <ClInclude Include="Source\Mesh.h" />
+    <ClInclude Include="Source\RenderSystem.h" />
     <ClInclude Include="Source\Shader.h" />
     <ClInclude Include="Source\Stub.h" />
+    <ClInclude Include="Source\System.h" />
+    <ClInclude Include="Source\WindowSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
