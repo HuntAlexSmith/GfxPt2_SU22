@@ -13,16 +13,13 @@
 #include "FileReader.h"
 #include "Shader.h"
 #include "Mesh.h"
-#include "Engine.h"
+#include "DckGfxEngine.h"
 
 // Window Stuff
 static const int width = 1280;
 static const int height = 720;
 static SDL_Window* windowHandle = nullptr;
 static SDL_GLContext glContext;
-
-// Static engine
-static Engine* testEngine;
 
 // Triangle vertices and buffers
 Mesh* my3DMesh;
@@ -96,8 +93,7 @@ static glm::mat4 cubeScale = GfxMath::Scale3D(1.f);
 int main(int argc, char* argv[]) {
 
 	// Create and initialize the engine
-	testEngine = new Engine();
-	testEngine->Initialize();
+	DckEInitialize();
 	
 	// Create a new mesh
 	my3DMesh = new Mesh();
@@ -117,7 +113,7 @@ int main(int argc, char* argv[]) {
 	myNormMesh = new NormalMesh(my3DMesh);
 
 	// Main loop
-	while (testEngine->IsRunning())
+	while (DckEIsRunning())
 	{
 		// Calculate a new rotation every frame
 		rotation += 0.5f;
@@ -127,15 +123,23 @@ int main(int argc, char* argv[]) {
 		// Calculate a new model matrix for the mesh and render it
 		glm::vec4 move = GfxMath::Point(3, 0, 0);
 		glm::mat4 fullTrans = GfxMath::Translate(move) * GfxMath::Rotate3D(diagAxis, rotation) * cubeScale;
-		testEngine->Render(my3DMesh, RenderType::Triangles, fullTrans);
+		DckERender(my3DMesh, RenderType::Triangles, fullTrans);
 
 		// Calculate a new model matrix for the mesh and render it
 		glm::vec4 otherMove = GfxMath::Point(-3, 0, 0);
 		glm::mat4 otherTrans = GfxMath::Translate(otherMove) * GfxMath::Rotate3D(diagAxis, -rotation) * cubeScale;
-		testEngine->Render(myNormMesh, RenderType::Triangles, otherTrans);
+		DckERender(myNormMesh, RenderType::Triangles, otherTrans);
 		
 		// Update the engine
-		testEngine->Update(0.0125f);
+		DckEUpdate(0.125f);
+
+		// Input Testing
+		if (DckEKeyIsTriggered(SDLK_e))
+			std::cout << "E Key is Triggered" << std::endl;
+		else if (DckEKeyIsDown(SDLK_e))
+			std::cout << "E Key is Down" << std::endl;
+		else if (DckEKeyIsReleased(SDLK_e))
+			std::cout << "E Key is Released" << std::endl;
 	}
 
 	// Delete the program and vao stuff
@@ -143,10 +147,7 @@ int main(int argc, char* argv[]) {
 	delete my3DMesh;
 
 	// Shut the engine down
-	testEngine->Shutdown();
-
-	// Delete the engine
-	delete testEngine;
+	DckEShutdown();
 
 	return 0;
 }

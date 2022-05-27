@@ -7,7 +7,8 @@
 //		of the rendering engine
 //*****************************************************************************
 
-typedef class Engine;
+// Forward declare engine so System knows what it is
+class Engine;
 
 class System {
 public:

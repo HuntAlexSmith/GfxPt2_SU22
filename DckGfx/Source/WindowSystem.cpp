@@ -56,12 +56,6 @@ void WindowSystem::Initialize()
 void WindowSystem::Update(float dt)
 {
 	SDL_GL_SwapWindow(window_);
-	SDL_Event windowEvent;
-	while (SDL_PollEvent(&windowEvent))
-	{
-		if (windowEvent.type == SDL_QUIT)
-			GetParent()->SetIsRunning(false);
-	}
 }
 
 void WindowSystem::Shutdown()

@@ -8,6 +8,7 @@
 
 #include "Engine.h"
 #include "WindowSystem.h"
+#include "InputSystem.h"
 #include "GraphicsSystem.h"
 #include "RenderSystem.h"
 
@@ -15,11 +16,13 @@ Engine::Engine() : systems_{nullptr}, isRunning_(false)
 {
 	// Create the new systems
 	System* windowSys = new WindowSystem();
+	System* inputSys = new InputSystem();
 	System* graphicSys = new GraphicsSystem();
 	System* renderSys = new RenderSystem();
 
 	// Add the systems to the engine
 	AddSystem(windowSys);
+	AddSystem(inputSys);
 	AddSystem(graphicSys);
 	AddSystem(renderSys);
 }
