@@ -121,7 +121,7 @@ glm::mat4 GfxMath::AffineInverse(const glm::mat4& affine)
 	return linearInvTrans * invTrans;
 }
 
-glm::vec4 GfxMath::CrossProduct(glm::vec4& u, glm::vec4& v)
+glm::vec4 GfxMath::CrossProduct(const glm::vec4& u, const glm::vec4& v)
 {
 	glm::vec3 u3(u);
 	glm::vec3 v3(v);

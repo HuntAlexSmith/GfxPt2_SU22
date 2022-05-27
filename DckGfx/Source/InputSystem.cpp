@@ -16,11 +16,27 @@ InputSystem::InputSystem() : System(SysType::InputSys), inputEvent_(), inputMap_
 
 void InputSystem::Initialize()
 {
-	// Create the key
-	Key eKey(SDLK_e, KeyState::None);
+	// Create the keys we want to be read
+	Key wKey(SDLK_w, KeyState::None);
+	Key aKey(SDLK_a, KeyState::None);
+	Key sKey(SDLK_s, KeyState::None);
+	Key dKey(SDLK_d, KeyState::None);
 
-	// Add the key to the input map
-	inputMap_.insert(eKey);
+	Key upKey(SDLK_UP, KeyState::None);
+	Key leftKey(SDLK_LEFT, KeyState::None);
+	Key rightKey(SDLK_RIGHT, KeyState::None);
+	Key downKey(SDLK_DOWN, KeyState::None);
+
+	// Add the keys to the input map
+	inputMap_.insert(wKey);
+	inputMap_.insert(aKey);
+	inputMap_.insert(sKey);
+	inputMap_.insert(dKey);
+
+	inputMap_.insert(upKey);
+	inputMap_.insert(leftKey);
+	inputMap_.insert(rightKey);
+	inputMap_.insert(downKey);
 }
 
 void InputSystem::Update(float dt)

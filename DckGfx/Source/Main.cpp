@@ -15,12 +15,6 @@
 #include "Mesh.h"
 #include "DckGfxEngine.h"
 
-// Window Stuff
-static const int width = 1280;
-static const int height = 720;
-static SDL_Window* windowHandle = nullptr;
-static SDL_GLContext glContext;
-
 // Triangle vertices and buffers
 Mesh* my3DMesh;
 NormalMesh* myNormMesh;
@@ -132,14 +126,6 @@ int main(int argc, char* argv[]) {
 		
 		// Update the engine
 		DckEUpdate(0.125f);
-
-		// Input Testing
-		if (DckEKeyIsTriggered(SDLK_e))
-			std::cout << "E Key is Triggered" << std::endl;
-		else if (DckEKeyIsDown(SDLK_e))
-			std::cout << "E Key is Down" << std::endl;
-		else if (DckEKeyIsReleased(SDLK_e))
-			std::cout << "E Key is Released" << std::endl;
 	}
 
 	// Delete the program and vao stuff

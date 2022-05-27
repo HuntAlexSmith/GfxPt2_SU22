@@ -8,29 +8,8 @@
 
 #include "RenderSystem.h"
 #include "GraphicsSystem.h"
+#include "CameraSystem.h"
 #include "Engine.h"
-
-// 3D Camera Attributes
-static glm::vec4 rightVec = GfxMath::Vector(1, 0, 0);
-static glm::vec4 upVec = GfxMath::Vector(0, 1, 0);
-static glm::vec4 backVec = GfxMath::Vector(0, 0, -1);
-static glm::vec4 camPos = GfxMath::Point(0.0f, 0.0f, -10.0f);
-static glm::mat4 camera3DMat = GfxMath::Affine(rightVec, upVec, backVec, camPos);
-static glm::mat4 view3DMat = GfxMath::AffineInverse(camera3DMat);
-
-// Calculate the perspective matrix
-static float nearDist = 1.0f;
-static float farDist = 100.0f;
-static float camDist = nearDist + (farDist - nearDist) / 2.0f;
-static float cam3DWidth = 2 * camDist;
-static float cam3DHeight = cam3DWidth / (16.0f / 9.0f);
-
-static glm::mat4 perspMat(
-	2 * camDist / cam3DWidth, 0, 0, 0,
-	0, 2 * camDist / cam3DHeight, 0, 0,
-	0, 0, (nearDist + farDist) / (nearDist - farDist), -1,
-	0, 0, (2 * nearDist * farDist) / (nearDist - farDist), 0
-);
 
 RenderSystem::RenderSystem() : System(SysType::RenderSys), renderQueue_()
 {
@@ -43,9 +22,17 @@ void RenderSystem::Initialize()
 
 void RenderSystem::Update(float dt)
 {
-	// Get necessary systems here (probably graphics)
+	// Get necessary systems here (probably graphics and camera)
 	GraphicsSystem* graphicSys = dynamic_cast<GraphicsSystem*>(GetParent()->GetSystem(SysType::GraphicsSys));
 	if (!graphicSys)
+	{
+		while (!renderQueue_.empty())
+			renderQueue_.pop();
+		return;
+	}
+
+	CameraSystem* camSys = dynamic_cast<CameraSystem*>(GetParent()->GetSystem(SysType::CameraSys));
+	if (!camSys)
 	{
 		while (!renderQueue_.empty())
 			renderQueue_.pop();
@@ -56,6 +43,16 @@ void RenderSystem::Update(float dt)
 	Shader* shader = graphicSys->GetActiveShader();
 	shader->Use();
 
+	// Get the active camera and respective matrices needed
+	glm::mat4 perspMat(0);
+	glm::mat4 viewMat(0);
+	Camera* activeCam = camSys->GetActiveCamera();
+	if (activeCam)
+	{
+		viewMat = activeCam->GetViewMatrix();
+		perspMat = activeCam->GetPerspMatrix();
+	}
+
 	// Get uniform locations here
 	GLint uObjToWorld = shader->GetUniformLocation("objToWorld");
 	GLint uWorldToCam = shader->GetUniformLocation("worldToCam");
@@ -65,7 +62,7 @@ void RenderSystem::Update(float dt)
 
 	// Upload Perspective Matrix and view matrix here
 	glUniformMatrix4fv(uPerspMat, 1, GL_FALSE, &perspMat[0][0]);
-	glUniformMatrix4fv(uWorldToCam, 1, GL_FALSE, &view3DMat[0][0]);
+	glUniformMatrix4fv(uWorldToCam, 1, GL_FALSE, &viewMat[0][0]);
 
 	// Go through the render queue and render everything
 	while (!renderQueue_.empty())
