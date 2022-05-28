@@ -100,7 +100,7 @@ void RenderSystem::Shutdown()
 void RenderSystem::Render(Mesh* mesh, RenderType type, glm::mat4 objToWorld)
 {
 	NormalMesh* normMesh = dynamic_cast<NormalMesh*>(mesh);
-	glm::mat4 normMat = GfxMath::AffineInverse(objToWorld);
+	glm::mat4 normMat = GfxMath::NormalMatrix(objToWorld);
 	switch (type)
 	{
 		case RenderType::Points:

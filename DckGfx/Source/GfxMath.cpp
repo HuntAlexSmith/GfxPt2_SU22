@@ -109,9 +109,8 @@ glm::mat4 GfxMath::AffineInverse(const glm::mat4& affine)
 {
 	// Inverse the linear part of the matrix
 	glm::mat4 linearInvTrans = glm::mat4(
-		glm::transpose(
-			glm::inverse(
-				glm::mat3(affine))));
+		glm::inverse(
+			glm::mat3(affine)));
 	
 	glm::mat4 invTrans = glm::mat4(1);
 	invTrans[3][0] = -affine[3][0];
@@ -119,6 +118,17 @@ glm::mat4 GfxMath::AffineInverse(const glm::mat4& affine)
 	invTrans[3][2] = -affine[3][2];
 
 	return linearInvTrans * invTrans;
+}
+
+glm::mat4 GfxMath::NormalMatrix(const glm::mat4& trans)
+{
+	return glm::mat4(
+		glm::transpose(
+			glm::inverse(
+				glm::mat3(trans)
+			)
+		)
+	);
 }
 
 glm::vec4 GfxMath::CrossProduct(const glm::vec4& u, const glm::vec4& v)

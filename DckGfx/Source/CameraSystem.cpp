@@ -87,10 +87,7 @@ void CameraSystem::Update(float dt)
 			activeCam_->Yaw(-rotAngle);
 	}
 
-	// Get rotations of each direction
-	glm::mat4 yawRot = GfxMath::Rotate3D(yVec, activeCam_->GetYaw());
-	glm::mat4 pitchRot = GfxMath::Rotate3D(xVec, activeCam_->GetPitch());
-	glm::mat4 rollRot = GfxMath::Rotate3D(zVec, activeCam_->GetRoll());
+	// Rotations
 
 	// Get the translation mat
 	glm::vec4 frontVec = activeCam_->GetLookAt();
@@ -99,7 +96,7 @@ void CameraSystem::Update(float dt)
 	glm::vec4 orientPos = eye + frontVec;
 	glm::mat4 translate = GfxMath::Translate(orientPos);
 
-	glm::mat4 translation = translate * pitchRot * yawRot * rollRot;
+	glm::mat4 translation = translate;
 
 	// Render the mesh
 	GetParent()->Render(orientationMesh_, RenderType::Lines, translation);
