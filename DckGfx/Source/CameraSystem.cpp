@@ -10,8 +10,8 @@
 #include "CameraSystem.h"
 #include "InputSystem.h"
 
-static const float moveAmount = 0.1f;
-static const float rotAngle = 1.0f;
+static const float moveAmount = 10.0f;
+static const float rotAngle = 45.0f;
 
 // Orientation mesh colors
 static const glm::vec3 red(1, 0, 0);
@@ -67,27 +67,25 @@ void CameraSystem::Update(float dt)
 	if (inputSys)
 	{
 		if (inputSys->KeyIsDown(SDLK_d))
-			activeCam_->XMove(moveAmount);
+			activeCam_->XMove(-moveAmount*dt);
 		else if (inputSys->KeyIsDown(SDLK_a))
-			activeCam_->XMove(-moveAmount);
+			activeCam_->XMove(moveAmount*dt);
 
 		if (inputSys->KeyIsDown(SDLK_w))
-			activeCam_->ZMove(moveAmount);
+			activeCam_->ZMove(moveAmount*dt);
 		else if (inputSys->KeyIsDown(SDLK_s))
-			activeCam_->ZMove(-moveAmount);
+			activeCam_->ZMove(-moveAmount*dt);
 
 		if (inputSys->KeyIsDown(SDLK_UP))
-			activeCam_->Pitch(rotAngle);
+			activeCam_->Pitch(rotAngle*dt);
 		else if (inputSys->KeyIsDown(SDLK_DOWN))
-			activeCam_->Pitch(-rotAngle);
+			activeCam_->Pitch(-rotAngle*dt);
 
 		if (inputSys->KeyIsDown(SDLK_LEFT))
-			activeCam_->Yaw(rotAngle);
+			activeCam_->Yaw(rotAngle*dt);
 		else if (inputSys->KeyIsDown(SDLK_RIGHT))
-			activeCam_->Yaw(-rotAngle);
+			activeCam_->Yaw(-rotAngle*dt);
 	}
-
-	// Rotations
 
 	// Get the translation mat
 	glm::vec4 frontVec = activeCam_->GetLookAt();
@@ -99,7 +97,7 @@ void CameraSystem::Update(float dt)
 	glm::mat4 translation = translate;
 
 	// Render the mesh
-	GetParent()->Render(orientationMesh_, RenderType::Lines, translation);
+	GetParent()->DebugRender(orientationMesh_, RenderType::Lines, translation);
 }
 
 void CameraSystem::Shutdown()

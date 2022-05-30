@@ -26,6 +26,7 @@ public:
 	void SetIsRunning(bool running);
 
 	void Render(Mesh* mesh, RenderType type, glm::mat4 modelMat);
+	void DebugRender(Mesh* mesh, RenderType type, glm::mat4 modelMat);
 
 	~Engine();
 

@@ -52,6 +52,9 @@ void DckERender(Mesh* mesh, RenderType type, glm::mat4 modelMat)
 		theEngine->Render(mesh, type, modelMat);
 }
 
+//
+//	KEYBOARD INPUT STUFF
+//
 bool DckEKeyIsTriggered(SDL_Keycode key)
 {
 	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
@@ -73,5 +76,56 @@ bool DckEKeyIsReleased(SDL_Keycode key)
 	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
 	if (inputSys)
 		return inputSys->KeyIsReleased(key);
+	return false;
+}
+
+//
+//	MOUSE INPUT STUFF
+//
+bool DckELeftMouseIsTriggered()
+{
+	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
+	if (inputSys)
+		return inputSys->LMIsTriggered();
+	return false;
+}
+
+bool DckELeftMouseIsDown()
+{
+	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
+	if (inputSys)
+		return inputSys->LMIsDown();
+	return false;
+}
+
+bool DckELeftMouseIsReleased()
+{
+	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
+	if (inputSys)
+		return inputSys->LMIsReleased();
+	return false;
+}
+
+bool DckERightMouseIsTriggered()
+{
+	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
+	if (inputSys)
+		return inputSys->RMIsTriggered();
+	return false;
+}
+
+bool DckERightMouseIsDown()
+{
+	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
+	if (inputSys)
+		return inputSys->RMIsDown();
+	return false;
+}
+
+bool DckERightMouseIsReleased()
+{
+	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
+	if (inputSys)
+		return inputSys->RMIsReleased();
 	return false;
 }

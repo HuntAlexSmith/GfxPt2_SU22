@@ -22,3 +22,11 @@ void DckERender(Mesh* mesh, RenderType type, glm::mat4 modelMat);
 bool DckEKeyIsTriggered(SDL_Keycode key);
 bool DckEKeyIsDown(SDL_Keycode key);
 bool DckEKeyIsReleased(SDL_Keycode key);
+
+bool DckELeftMouseIsTriggered();
+bool DckELeftMouseIsDown();
+bool DckELeftMouseIsReleased();
+
+bool DckERightMouseIsTriggered();
+bool DckERightMouseIsDown();
+bool DckERightMouseIsReleased();

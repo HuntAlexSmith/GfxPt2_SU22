@@ -11,7 +11,7 @@
 #include "CameraSystem.h"
 #include "Engine.h"
 
-RenderSystem::RenderSystem() : System(SysType::RenderSys), renderQueue_()
+RenderSystem::RenderSystem() : System(SysType::RenderSys), renderQueue_(), debugQueue_()
 {
 }
 
@@ -28,6 +28,8 @@ void RenderSystem::Update(float dt)
 	{
 		while (!renderQueue_.empty())
 			renderQueue_.pop();
+		while (!debugQueue_.empty())
+			debugQueue_.pop();
 		return;
 	}
 
@@ -36,6 +38,8 @@ void RenderSystem::Update(float dt)
 	{
 		while (!renderQueue_.empty())
 			renderQueue_.pop();
+		while (!debugQueue_.empty())
+			debugQueue_.pop();
 		return;
 	}
 
@@ -87,6 +91,40 @@ void RenderSystem::Update(float dt)
 				break;
 			case RenderType::Triangles:
 				glDrawElements(GL_TRIANGLES, 3 * currentData.elementCount, GL_UNSIGNED_INT, 0);
+				break;
+			default:
+				break;
+		}
+		glBindVertexArray(0);
+	}
+
+	// Now to render debug stuff that can always be seen
+	glClear(GL_DEPTH_BUFFER_BIT);
+	while (!debugQueue_.empty())
+	{
+		// Get current render data
+		RenderData currentData = debugQueue_.front();
+		debugQueue_.pop();
+
+		// Upload necessary uniforms
+		glUniformMatrix4fv(uObjToWorld, 1, GL_FALSE, &currentData.objToWorld[0][0]);
+		glUniformMatrix4fv(uNormMat, 1, GL_FALSE, &currentData.normalMat[0][0]);
+		glUniform1i(uIgNorm, currentData.noNorm);
+
+		// Render object using specified typing
+		glBindVertexArray(currentData.vao);
+		switch (currentData.type)
+		{
+		case RenderType::Points:
+			break;
+		case RenderType::Lines:
+			glDrawElements(GL_LINES, 2 * currentData.elementCount, GL_UNSIGNED_INT, 0);
+			break;
+		case RenderType::Triangles:
+			glDrawElements(GL_TRIANGLES, 3 * currentData.elementCount, GL_UNSIGNED_INT, 0);
+			break;
+		default:
+			break;
 		}
 		glBindVertexArray(0);
 	}
@@ -114,6 +152,26 @@ void RenderSystem::Render(Mesh* mesh, RenderType type, glm::mat4 objToWorld)
 			else
 				renderQueue_.push(RenderData(mesh->GetFaceVAO(), mesh->GetFaceCount(), type, 1, objToWorld, normMat));
 			break;
+	}
+}
+
+void RenderSystem::RenderDebug(Mesh* mesh, RenderType type, glm::mat4 objToWorld)
+{
+	NormalMesh* normMesh = dynamic_cast<NormalMesh*>(mesh);
+	glm::mat4 normMat = GfxMath::NormalMatrix(objToWorld);
+	switch (type)
+	{
+	case RenderType::Points:
+		break;
+	case RenderType::Lines:
+		debugQueue_.push(RenderData(mesh->GetEdgeVAO(), mesh->GetEdgeCount(), type, 1, objToWorld, normMat));
+		break;
+	case RenderType::Triangles:
+		if (normMesh)
+			debugQueue_.push(RenderData(normMesh->GetNormalFaceVAO(), normMesh->GetFaceCount(), type, 0, objToWorld, normMat));
+		else
+			debugQueue_.push(RenderData(mesh->GetFaceVAO(), mesh->GetFaceCount(), type, 1, objToWorld, normMat));
+		break;
 	}
 }
 

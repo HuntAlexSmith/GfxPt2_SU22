@@ -89,6 +89,13 @@ void Engine::Render(Mesh* mesh, RenderType type, glm::mat4 modelMat)
 		renderSys->Render(mesh, type, modelMat);
 }
 
+void Engine::DebugRender(Mesh* mesh, RenderType type, glm::mat4 modelMat)
+{
+	RenderSystem* renderSys = dynamic_cast<RenderSystem*>(systems_[System::SysType::RenderSys]);
+	if (renderSys)
+		renderSys->RenderDebug(mesh, type, modelMat);
+}
+
 Engine::~Engine()
 {
 	for (int i = System::SysType::SystemCount - 1; i >= 0; --i)

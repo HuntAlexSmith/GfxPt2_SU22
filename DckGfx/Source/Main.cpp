@@ -84,6 +84,11 @@ static glm::vec4 diagAxis = GfxMath::Vector(1, 1, 1);
 static glm::vec4 center = GfxMath::Point(0, 0, 0);
 static glm::mat4 cubeScale = GfxMath::Scale3D(1.f);
 
+// Delta time stuff
+Uint32 lastTick = 0;
+Uint32 currentTick = 0;
+float dt = 0;
+
 int main(int argc, char* argv[]) {
 
 	// Create and initialize the engine
@@ -109,6 +114,10 @@ int main(int argc, char* argv[]) {
 	// Main loop
 	while (DckEIsRunning())
 	{
+		lastTick = currentTick;
+		currentTick = SDL_GetTicks();
+		dt = (currentTick - lastTick) / 1000.0f;
+
 		// Calculate a new rotation every frame
 		rotation += 0.5f;
 		if (rotation > 360.0f)
@@ -123,9 +132,23 @@ int main(int argc, char* argv[]) {
 		glm::vec4 otherMove = GfxMath::Point(-3, 0, 0);
 		glm::mat4 otherTrans = GfxMath::Translate(otherMove) * GfxMath::Rotate3D(diagAxis, -rotation) * cubeScale;
 		DckERender(myNormMesh, RenderType::Triangles, otherTrans);
+
+		if (DckELeftMouseIsTriggered())
+			std::cout << "Left Mouse Triggered" << std::endl;
+		else if (DckELeftMouseIsDown())
+			std::cout << "Left Mouse Down" << std::endl;
+		else if (DckELeftMouseIsReleased())
+			std::cout << "Left Mouse Released" << std::endl;
+
+		if (DckERightMouseIsTriggered())
+			std::cout << "Right Mouse Triggered" << std::endl;
+		else if (DckERightMouseIsDown())
+			std::cout << "Right Mouse Down" << std::endl;
+		else if (DckERightMouseIsReleased())
+			std::cout << "Right Mouse Released" << std::endl;
 		
 		// Update the engine
-		DckEUpdate(0.125f);
+		DckEUpdate(dt);
 	}
 
 	// Delete the program and vao stuff

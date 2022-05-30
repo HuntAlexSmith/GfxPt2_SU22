@@ -10,7 +10,14 @@
 
 typedef std::pair<SDL_Keycode, InputSystem::KeyState> Key;
 
-InputSystem::InputSystem() : System(SysType::InputSys), inputEvent_(), inputMap_()
+InputSystem::InputSystem() : System(SysType::InputSys),
+inputEvent_(),
+inputMap_(),
+mouseX_(0),
+mouseY_(0),
+mouseMask_(0),
+leftMouse_(KeyState::None),
+rightMouse_(KeyState::None)
 {
 }
 
@@ -47,19 +54,43 @@ void InputSystem::Update(float dt)
 		switch (itr.second)
 		{
 			// If the key was triggered, it is now down
-			case KeyState::Triggered:
-				itr.second = KeyState::Down;
-				break;
+		case KeyState::Triggered:
+			itr.second = KeyState::Down;
+			break;
 
 			// If the key was released, it is now none
-			case KeyState::Released:
-				itr.second = KeyState::None;
-				break;
+		case KeyState::Released:
+			itr.second = KeyState::None;
+			break;
 
 			// Default case
-			default:
-				break;
+		default:
+			break;
 		}
+	}
+
+	switch (leftMouse_)
+	{
+		case KeyState::Triggered:
+			leftMouse_ = KeyState::Down;
+			break;
+		case KeyState::Released:
+			leftMouse_ = KeyState::None;
+			break;
+		default:
+			break;
+	}
+
+	switch (rightMouse_)
+	{
+		case KeyState::Triggered:
+			rightMouse_ = KeyState::Down;
+			break;
+		case KeyState::Released:
+			rightMouse_ = KeyState::None;
+			break;
+		default:
+			break;
 	}
 
 	// Loop for processing all input events
@@ -70,6 +101,22 @@ void InputSystem::Update(float dt)
 		{
 			GetParent()->SetIsRunning(false);
 			return;
+		}
+
+		switch (inputEvent_.type)
+		{
+			case SDL_MOUSEBUTTONDOWN:
+				if (inputEvent_.button.button == SDL_BUTTON_LEFT)
+					leftMouse_ = KeyState::Triggered;
+				if (inputEvent_.button.button == SDL_BUTTON_RIGHT)
+					rightMouse_ = KeyState::Triggered;
+				break;
+			case SDL_MOUSEBUTTONUP:
+				if (inputEvent_.button.button == SDL_BUTTON_LEFT)
+					leftMouse_ = KeyState::Released;
+				if (inputEvent_.button.button == SDL_BUTTON_RIGHT)
+					rightMouse_ = KeyState::Released;
+				break;
 		}
 
 		// Otherwise, check that the current key is being checked for input
@@ -127,6 +174,41 @@ bool InputSystem::KeyIsReleased(SDL_Keycode key)
 		if (keyItr->second == KeyState::Released)
 			return true;
 	return false;
+}
+
+bool InputSystem::LMIsTriggered()
+{
+	return leftMouse_ == KeyState::Triggered;
+}
+
+bool InputSystem::LMIsDown()
+{
+	return leftMouse_ == KeyState::Down;
+}
+
+bool InputSystem::LMIsReleased()
+{
+	return leftMouse_ == KeyState::Released;
+}
+
+bool InputSystem::RMIsTriggered()
+{
+	return rightMouse_ == KeyState::Triggered;
+}
+
+bool InputSystem::RMIsDown()
+{
+	return rightMouse_ == KeyState::Down;
+}
+
+bool InputSystem::RMIsReleased()
+{
+	return rightMouse_ == KeyState::Released;
+}
+
+void InputSystem::GetMouseScreenPos(int* x, int* y)
+{
+	SDL_GetMouseState(x, y);
 }
 
 InputSystem::~InputSystem()

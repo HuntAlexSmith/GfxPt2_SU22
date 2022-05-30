@@ -39,11 +39,13 @@ public:
 	void Shutdown() override;
 
 	void Render(Mesh* mesh, RenderType type, glm::mat4 objToWorld);
+	void RenderDebug(Mesh* mesh, RenderType type, glm::mat4 objToWorld);
 
 	~RenderSystem();
 
 private:
 
 	std::queue<RenderData> renderQueue_;
+	std::queue<RenderData> debugQueue_;
 
 };

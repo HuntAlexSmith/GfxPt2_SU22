@@ -30,10 +30,26 @@ public:
 	bool KeyIsDown(SDL_Keycode key);
 	bool KeyIsReleased(SDL_Keycode key);
 
+	bool LMIsTriggered();
+	bool LMIsDown();
+	bool LMIsReleased();
+
+	bool RMIsTriggered();
+	bool RMIsDown();
+	bool RMIsReleased();
+
+	void GetMouseScreenPos(int* x, int* y);
+
 	~InputSystem();
 
 private:
 
 	SDL_Event inputEvent_;
 	std::map<SDL_Keycode, KeyState> inputMap_;
+
+	int mouseX_, mouseY_;
+	Uint8 mouseMask_;
+
+	KeyState leftMouse_;
+	KeyState rightMouse_;
 };
