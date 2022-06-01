@@ -7,17 +7,24 @@
 //*****************************************************************************
 
 #include "RenderSystem.h"
+#include "InputSystem.h"
 #include "GraphicsSystem.h"
 #include "CameraSystem.h"
 #include "Engine.h"
 
-RenderSystem::RenderSystem() : System(SysType::RenderSys), renderQueue_(), debugQueue_()
+RenderSystem::RenderSystem() : System(SysType::RenderSys),
+	renderQueue_(),
+	debugQueue_(),
+	pointSize_(5.0f),
+	lineWidth_(1.0f)
 {
 }
 
 void RenderSystem::Initialize()
 {
 	// Nothing to really initialize here
+	glLineWidth(lineWidth_);
+	glPointSize(pointSize_);
 }
 
 void RenderSystem::Update(float dt)
@@ -85,6 +92,7 @@ void RenderSystem::Update(float dt)
 		switch (currentData.type)
 		{
 			case RenderType::Points:
+				glDrawElements(GL_POINTS, currentData.elementCount, GL_UNSIGNED_INT, 0);
 				break;
 			case RenderType::Lines:
 				glDrawElements(GL_LINES, 2 * currentData.elementCount, GL_UNSIGNED_INT, 0);
@@ -115,16 +123,17 @@ void RenderSystem::Update(float dt)
 		glBindVertexArray(currentData.vao);
 		switch (currentData.type)
 		{
-		case RenderType::Points:
-			break;
-		case RenderType::Lines:
-			glDrawElements(GL_LINES, 2 * currentData.elementCount, GL_UNSIGNED_INT, 0);
-			break;
-		case RenderType::Triangles:
-			glDrawElements(GL_TRIANGLES, 3 * currentData.elementCount, GL_UNSIGNED_INT, 0);
-			break;
-		default:
-			break;
+			case RenderType::Points:
+				glDrawElements(GL_POINTS, currentData.elementCount, GL_UNSIGNED_INT, 0);
+				break;
+			case RenderType::Lines:
+				glDrawElements(GL_LINES, 2 * currentData.elementCount, GL_UNSIGNED_INT, 0);
+				break;
+			case RenderType::Triangles:
+				glDrawElements(GL_TRIANGLES, 3 * currentData.elementCount, GL_UNSIGNED_INT, 0);
+				break;
+			default:
+				break;
 		}
 		glBindVertexArray(0);
 	}
@@ -142,6 +151,7 @@ void RenderSystem::Render(Mesh* mesh, RenderType type, glm::mat4 objToWorld)
 	switch (type)
 	{
 		case RenderType::Points:
+			renderQueue_.push(RenderData(mesh->GetPointVAO(), mesh->GetPointCount(), type, 1, objToWorld, normMat));
 			break;
 		case RenderType::Lines:
 			renderQueue_.push(RenderData(mesh->GetEdgeVAO(), mesh->GetEdgeCount(), type, 1, objToWorld, normMat));
@@ -162,6 +172,7 @@ void RenderSystem::RenderDebug(Mesh* mesh, RenderType type, glm::mat4 objToWorld
 	switch (type)
 	{
 	case RenderType::Points:
+		debugQueue_.push(RenderData(mesh->GetPointVAO(), mesh->GetPointCount(), type, 1, objToWorld, normMat));
 		break;
 	case RenderType::Lines:
 		debugQueue_.push(RenderData(mesh->GetEdgeVAO(), mesh->GetEdgeCount(), type, 1, objToWorld, normMat));

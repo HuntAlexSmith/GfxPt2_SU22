@@ -48,4 +48,7 @@ private:
 	std::queue<RenderData> renderQueue_;
 	std::queue<RenderData> debugQueue_;
 
+	float pointSize_;
+	float lineWidth_;
+
 };

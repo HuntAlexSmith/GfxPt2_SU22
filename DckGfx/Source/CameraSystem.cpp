@@ -12,6 +12,7 @@
 
 static const float moveAmount = 10.0f;
 static const float rotAngle = 45.0f;
+static const float mouseSen = 1.0f;
 
 // Orientation mesh colors
 static const glm::vec3 red(1, 0, 0);
@@ -28,7 +29,12 @@ static const glm::vec4 xVec = GfxMath::Vector(1, 0, 0);
 static const glm::vec4 yVec = GfxMath::Vector(0, 1, 0);
 static const glm::vec4 zVec = GfxMath::Vector(0, 0, 1);
 
-CameraSystem::CameraSystem() : System(SysType::CameraSys), orientationMesh_(nullptr), cameras_(), activeCam_(nullptr)
+CameraSystem::CameraSystem() : System(SysType::CameraSys),
+	prevMousePos_(GfxMath::Point(0, 0)),
+	currMousePos_(GfxMath::Point(0, 0)),
+	orientationMesh_(nullptr),
+	cameras_(),
+	activeCam_(nullptr)
 {
 }
 
@@ -57,6 +63,10 @@ void CameraSystem::Update(float dt)
 		orientationMesh_->AddVertex(yDir, green);
 		orientationMesh_->AddVertex(zDir, blue);
 
+		orientationMesh_->AddPoint(3);
+		orientationMesh_->AddPoint(4);
+		orientationMesh_->AddPoint(5);
+
 		orientationMesh_->AddEdge(0, 3);
 		orientationMesh_->AddEdge(1, 4);
 		orientationMesh_->AddEdge(2, 5);
@@ -66,37 +76,65 @@ void CameraSystem::Update(float dt)
 	InputSystem* inputSys = dynamic_cast<InputSystem*>(GetParent()->GetSystem(SysType::InputSys));
 	if (inputSys)
 	{
+		// Basic movement of the camera's position
 		if (inputSys->KeyIsDown(SDLK_d))
-			activeCam_->XMove(-moveAmount*dt);
+			activeCam_->SideMove(moveAmount*dt);
 		else if (inputSys->KeyIsDown(SDLK_a))
-			activeCam_->XMove(moveAmount*dt);
+			activeCam_->SideMove(-moveAmount*dt);
 
 		if (inputSys->KeyIsDown(SDLK_w))
-			activeCam_->ZMove(moveAmount*dt);
+			activeCam_->ForwardMove(moveAmount*dt);
 		else if (inputSys->KeyIsDown(SDLK_s))
-			activeCam_->ZMove(-moveAmount*dt);
+			activeCam_->ForwardMove(-moveAmount*dt);
 
-		if (inputSys->KeyIsDown(SDLK_UP))
-			activeCam_->Pitch(rotAngle*dt);
-		else if (inputSys->KeyIsDown(SDLK_DOWN))
-			activeCam_->Pitch(-rotAngle*dt);
-
+		// Orientation of the camera
 		if (inputSys->KeyIsDown(SDLK_LEFT))
-			activeCam_->Yaw(rotAngle*dt);
+			activeCam_->Roll(rotAngle * dt);
 		else if (inputSys->KeyIsDown(SDLK_RIGHT))
-			activeCam_->Yaw(-rotAngle*dt);
+			activeCam_->Roll(-rotAngle * dt);
+
+		// Zoom of the camera
+		if (inputSys->KeyIsDown(SDLK_UP))
+			activeCam_->Zoom(rotAngle * dt);
+		else if (inputSys->KeyIsDown(SDLK_DOWN))
+			activeCam_->Zoom(rotAngle * -dt);
+
+		// Mouse input for orientation of the camera
+		if (inputSys->RMIsTriggered())
+			inputSys->GetMouseScreenPos(&currMousePos_.x, &currMousePos_.y);
+		else if (inputSys->RMIsDown())
+		{
+			// Update mouse position stuff
+			prevMousePos_ = currMousePos_;
+			inputSys->GetMouseScreenPos(&currMousePos_.x, &currMousePos_.y);
+
+			glm::vec4 mouseDist = GfxMath::Vector(currMousePos_.x - prevMousePos_.x, currMousePos_.y - prevMousePos_.y);
+
+			// Get the X rotation and rotate the camera
+			if (currMousePos_.x != prevMousePos_.x)
+			{
+				activeCam_->Yaw(-mouseDist.x*mouseSen);
+			}
+
+			// Get the Y rotation and rotate the camera
+			if (currMousePos_.y != prevMousePos_.y)
+			{
+				activeCam_->Pitch(-mouseDist.y*mouseSen);
+			}
+		}
 	}
 
 	// Get the translation mat
 	glm::vec4 frontVec = activeCam_->GetLookAt();
 	glm::vec4 eye = activeCam_->GetEyePoint();
-	frontVec *= 8;
+	frontVec *= 15;
 	glm::vec4 orientPos = eye + frontVec;
-	glm::mat4 translate = GfxMath::Translate(orientPos);
+	glm::mat4 translate = GfxMath::Translate(orientPos) * GfxMath::Scale3D(activeCam_->GetFOV() / 90.0f);
 
 	glm::mat4 translation = translate;
 
 	// Render the mesh
+	GetParent()->DebugRender(orientationMesh_, RenderType::Points, translation);
 	GetParent()->DebugRender(orientationMesh_, RenderType::Lines, translation);
 }
 

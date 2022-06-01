@@ -13,17 +13,16 @@ public:
 
 	Camera(glm::vec4 eye, glm::vec4 lookAt, float fov, float aspect, float near, float far);
 
-	void XMove(float amount);
-	void YMove(float amount);
-	void ZMove(float amount);
+	void ForwardMove(float amount);
+	void SideMove(float amount);
 
 	void Yaw(float angle);
 	void Pitch(float angle);
 	void Roll(float angle);
 
-	float GetYaw();
-	float GetPitch();
-	float GetRoll();
+	float GetFOV();
+
+	void Zoom(float zoom);
 
 	glm::vec4 GetLookAt();
 	glm::vec4 GetEyePoint();
@@ -52,6 +51,9 @@ private:
 	// Eye point of the camera
 	glm::vec4 eyePoint_;
 	
+	// Current fov of the camera
+	float fov_;
+
 	// Look At Vector for the Camera
 	glm::vec4 lookAtVec_;
 
@@ -69,9 +71,4 @@ private:
 	float nearDist_;
 	float viewportDist_;
 	float farDist_;
-
-	// Angle Orientations
-	float yaw_;
-	float pitch_;
-	float roll_;
 };

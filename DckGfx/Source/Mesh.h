@@ -21,6 +21,7 @@ public:
 	enum Buffers {
 		VBO,
 		CBO,
+		pointEBO,
 		edgeEBO,
 		faceEBO,
 		BuffCount
@@ -42,6 +43,7 @@ public:
 	Mesh();
 
 	void AddVertex(glm::vec4 position, glm::vec3 color);
+	void AddPoint(unsigned int v);
 	void AddEdge(unsigned int v1, unsigned int v2);
 	void AddFace(unsigned int v1, unsigned int v2, unsigned int v3);
 
@@ -49,6 +51,7 @@ public:
 	Face GetFace(unsigned int i);
 
 	int GetVertexCount();
+	int GetPointCount();
 	int GetEdgeCount();
 	int GetFaceCount();
 
@@ -56,6 +59,7 @@ public:
 	glm::vec3* GetColors();
 	Mesh::Face* GetFaces();
 
+	GLuint GetPointVAO();
 	GLuint GetEdgeVAO();
 	GLuint GetFaceVAO();
 
@@ -74,12 +78,13 @@ private:
 	std::vector<glm::vec4> vertices_;
 	std::vector<glm::vec3> colors_;
 
+	std::vector<unsigned int> points_;
 	std::vector<Edge> edges_;
 	std::vector<Face> faces_;
 
 	GLuint buffers_[BuffCount];
 
-	GLuint edgeVao_, faceVao_;
+	GLuint pointVao_, edgeVao_, faceVao_;
 };
 
 class NormalMesh : public Mesh {

@@ -34,6 +34,11 @@ void InputSystem::Initialize()
 	Key rightKey(SDLK_RIGHT, KeyState::None);
 	Key downKey(SDLK_DOWN, KeyState::None);
 
+	Key f1Key(SDLK_F1, KeyState::None);
+	Key f2Key(SDLK_F2, KeyState::None);
+	Key f3Key(SDLK_F3, KeyState::None);
+	Key f4Key(SDLK_F4, KeyState::None);
+
 	// Add the keys to the input map
 	inputMap_.insert(wKey);
 	inputMap_.insert(aKey);
@@ -44,6 +49,11 @@ void InputSystem::Initialize()
 	inputMap_.insert(leftKey);
 	inputMap_.insert(rightKey);
 	inputMap_.insert(downKey);
+
+	inputMap_.insert(f1Key);
+	inputMap_.insert(f2Key);
+	inputMap_.insert(f3Key);
+	inputMap_.insert(f4Key);
 }
 
 void InputSystem::Update(float dt)

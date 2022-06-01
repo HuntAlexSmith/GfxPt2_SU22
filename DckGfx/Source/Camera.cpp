@@ -17,6 +17,7 @@ Camera::Camera(glm::vec4 eye, glm::vec4 lookAt, float fov, float aspect, float n
 	viewIsDirty_(true),
 	perspIsDirty_(true),
 	eyePoint_(eye),
+	fov_(fov),
 	lookAtVec_(lookAt),
 	rightVec_(),
 	upVec_(),
@@ -26,10 +27,7 @@ Camera::Camera(glm::vec4 eye, glm::vec4 lookAt, float fov, float aspect, float n
 	viewportHeight_(),
 	nearDist_(near),
 	viewportDist_(),
-	farDist_(far),
-	yaw_(0.0f),
-	pitch_(0.0f),
-	roll_(0.0f)
+	farDist_(far)
 {
 	// Calculate back vector
 	backVec_ = -lookAt / glm::length(lookAt);
@@ -45,25 +43,19 @@ Camera::Camera(glm::vec4 eye, glm::vec4 lookAt, float fov, float aspect, float n
 	viewportDist_ = nearDist_ + (farDist_ - nearDist_) / 2.0f;
 
 	// Calculate width and height of the camera
-	viewportWidth_ = 2 * viewportDist_ * tanf(fov / 2.0f);
+	viewportWidth_ = 2 * viewportDist_ * tanf(glm::radians(fov) / 2.0f);
 	viewportHeight_ = viewportWidth_ / aspectRatio_;
 }
 
-void Camera::XMove(float amount)
+void Camera::ForwardMove(float amount)
 {
-	eyePoint_.x += amount;
+	eyePoint_ += -amount * backVec_;
 	SetDirtyFlags(true);
 }
 
-void Camera::YMove(float amount)
+void Camera::SideMove(float amount)
 {
-	eyePoint_.y += amount;
-	SetDirtyFlags(true);
-}
-
-void Camera::ZMove(float amount)
-{
-	eyePoint_.z += amount;
+	eyePoint_ += amount * rightVec_;
 	SetDirtyFlags(true);
 }
 
@@ -74,8 +66,6 @@ void Camera::Yaw(float angle)
 	rightVec_ = rotation * rightVec_;
 	upVec_ = rotation * upVec_;
 	backVec_ = rotation * backVec_;
-
-	yaw_ += angle;
 
 	SetDirtyFlags(true);
 }
@@ -88,8 +78,6 @@ void Camera::Pitch(float angle)
 	upVec_ = rotation * upVec_;
 	backVec_ = rotation * backVec_;
 
-	pitch_ += angle;
-
 	SetDirtyFlags(true);
 }
 
@@ -101,24 +89,27 @@ void Camera::Roll(float angle)
 	upVec_ = rotation * upVec_;
 	backVec_ = rotation * backVec_;
 
-	roll_ += angle;
-
 	SetDirtyFlags(true);
 }
 
-float Camera::GetYaw()
+float Camera::GetFOV()
 {
-	return yaw_;
+	return fov_;
 }
 
-float Camera::GetPitch()
+void Camera::Zoom(float zoom)
 {
-	return pitch_;
-}
+	fov_ -= zoom;
+	if (fov_ < 1.0f)
+		fov_ = 1.0f;
 
-float Camera::GetRoll()
-{
-	return roll_;
+	if (fov_ > 90.0f)
+		fov_ = 90.0f;
+
+	viewportWidth_ = 2 * viewportDist_ * tanf(glm::radians(fov_) / 2.0f);
+	viewportHeight_ = viewportWidth_ / aspectRatio_;
+
+	SetDirtyFlags(true);
 }
 
 glm::vec4 Camera::GetLookAt()

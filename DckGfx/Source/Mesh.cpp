@@ -15,14 +15,17 @@ Mesh::Mesh() : posAttrib_(posAttribLocation),
 	colorAttrib_(colorAttribLocation),
 	vertices_(),
 	colors_(),
+	points_(),
 	edges_(),
 	faces_(),
 	buffers_(),
+	pointVao_(0),
 	edgeVao_(0),
 	faceVao_(0)
 {
 	glGenBuffers(1, &buffers_[VBO]);
 	glGenBuffers(1, &buffers_[CBO]);
+	glGenBuffers(1, &buffers_[pointEBO]);
 	glGenBuffers(1, &buffers_[edgeEBO]);
 	glGenBuffers(1, &buffers_[faceEBO]);
 }
@@ -42,6 +45,17 @@ void Mesh::AddVertex(glm::vec4 position, glm::vec3 color)
 	glBindBuffer(GL_ARRAY_BUFFER, buffers_[CBO]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertCount, &(colors_[0]), GL_STATIC_DRAW);
 	// glNamedBufferData(buffers_[CBO], vertCount * sizeof(glm::vec3), &(colors_[0]), GL_STATIC_DRAW);
+}
+
+void Mesh::AddPoint(unsigned int v)
+{
+	int vertCount = GetVertexCount();
+	if (v > vertCount)
+		return;
+
+	points_.push_back(v);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers_[pointEBO]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * GetPointCount(), &(points_[0]), GL_STATIC_DRAW);
 }
 
 void Mesh::AddEdge(unsigned int v1, unsigned int v2)
@@ -74,6 +88,11 @@ std::pair<glm::vec4, glm::vec3> Mesh::GetVertex(unsigned int v)
 int Mesh::GetVertexCount()
 {
 	return static_cast<int>(vertices_.size());
+}
+
+int Mesh::GetPointCount()
+{
+	return points_.size();
 }
 
 glm::vec4* Mesh::GetVertices()
@@ -111,6 +130,29 @@ Mesh::Face Mesh::GetFace(unsigned int i)
 GLuint Mesh::GetBuffer(Buffers buff)
 {
 	return buffers_[buff];
+}
+
+GLuint Mesh::GetPointVAO()
+{
+	if (!pointVao_)
+	{
+		glGenVertexArrays(1, &pointVao_);
+
+		glBindVertexArray(pointVao_);
+
+		glBindBuffer(GL_ARRAY_BUFFER, buffers_[VBO]);
+		glVertexAttribPointer(posAttrib_, 4, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(posAttrib_);
+
+		glBindBuffer(GL_ARRAY_BUFFER, buffers_[CBO]);
+		glVertexAttribPointer(colorAttrib_, 3, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(colorAttrib_);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers_[pointEBO]);
+
+		glBindVertexArray(0);
+	}
+	return pointVao_;
 }
 
 GLuint Mesh::GetEdgeVAO()

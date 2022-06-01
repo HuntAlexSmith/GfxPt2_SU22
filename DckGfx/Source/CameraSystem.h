@@ -27,6 +27,10 @@ public:
 
 private:
 
+	// Previous and current mouse positions
+	glm::ivec4 prevMousePos_;
+	glm::ivec4 currMousePos_;
+
 	// Orientation mesh, which is used to understand 
 	Mesh* orientationMesh_;
 	

@@ -30,7 +30,7 @@ void GraphicsSystem::Initialize()
 	glEnable(GL_DEPTH_TEST);
 
 	// Enable VSync
-	SDL_GL_SetSwapInterval(1);
+	int worked = SDL_GL_SetSwapInterval(0);
 
 	// Get the current window size and set the viewport
 	WindowSystem* windowSys = dynamic_cast<WindowSystem*>(GetParent()->GetSystem(SysType::WindowSys));
