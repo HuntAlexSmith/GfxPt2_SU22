@@ -1,18 +1,26 @@
 //*****************************************************************************
 //	File:   DckGfxEngine.cpp
 //  Author: Hunter Smith
-//  Date:   05/27/2022
+//  Date:   06/02/2022
 //  Description: File for containing the static engine object and having
 //		funtions for the user to interact with the engine as needed.
 //*****************************************************************************
 
 #include "DckGfxEngine.h"
 #include "InputSystem.h"
+#include "GraphicsSystem.h"
+#include "SceneSystem.h"
 #include <iostream>
 #include <stdexcept>
 
+// Static declaration, so can't be accessed by other files
 static Engine* theEngine;
 
+//*****************************************************************************
+//  Description:
+//		Initializes the engine, allocating memory to the engine
+//		and initializing the engine. Throws exception if error occurs
+//*****************************************************************************
 void DckEInitialize()
 {
 	theEngine = new Engine();
@@ -25,12 +33,24 @@ void DckEInitialize()
 	}
 }
 
+//*****************************************************************************
+//  Description:
+//		Updates the engine and all of the engine components
+// 
+//	Param dt:
+//		Delta time for updating the components
+//*****************************************************************************
 void DckEUpdate(float dt)
 {
 	if (theEngine)
 		theEngine->Update(dt);
 }
 
+//*****************************************************************************
+//  Description:
+//		Shuts the engine and all of its systems down, freeing the 
+//		allocated eninge afterwards
+//*****************************************************************************
 void DckEShutdown()
 {
 	if (theEngine)
@@ -40,21 +60,48 @@ void DckEShutdown()
 	}
 }
 
+//*****************************************************************************
+//  Description:
+//		Returns whether or not the engine is currently running or not
+// 
+//	Return:
+//		Returns a boolean saying whether or not the engine is running
+//*****************************************************************************
 bool DckEIsRunning()
 {
 	if (theEngine)
 		return theEngine->IsRunning();
 }
 
+//*****************************************************************************
+//  Description:
+//		Renders a mesh with given parameters
+//	
+//	Param mesh:
+//		The mesh that is to be rendered
+// 
+//	Param type:
+//		How the mesh will be rendered (points, lines, or triangles)
+// 
+//	Param modelMat:
+//		The Object to World matrix for the mesh
+//*****************************************************************************
 void DckERender(Mesh* mesh, RenderType type, glm::mat4 modelMat)
 {
 	if (theEngine)
 		theEngine->Render(mesh, type, modelMat);
 }
 
-//
-//	KEYBOARD INPUT STUFF
-//
+//*****************************************************************************
+//  Description:
+//		Checks if the given key is in the triggered state
+//	
+//	Param key:
+//		The key to check the triggered state of
+// 
+//	Return:
+//		Returns true if the key is triggered, false otherwise
+//*****************************************************************************
 bool DckEKeyIsTriggered(SDL_Keycode key)
 {
 	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
@@ -63,6 +110,16 @@ bool DckEKeyIsTriggered(SDL_Keycode key)
 	return false;
 }
 
+//*****************************************************************************
+//  Description:
+//		Checks if the given key is in the down state or not
+//	
+//	Param key:
+//		The key to check the down state of
+// 
+//	Return:
+//		Returns true if the key is triggered, false otherwise
+//*****************************************************************************
 bool DckEKeyIsDown(SDL_Keycode key)
 {
 	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
@@ -71,6 +128,16 @@ bool DckEKeyIsDown(SDL_Keycode key)
 	return false;
 }
 
+//*****************************************************************************
+//  Description:
+//		Checks if the given key is in the released state or not
+//	
+//	Param key:
+//		The key to check the released state of
+// 
+//	Return:
+//		Returns true if the key is released, false otherwise
+//*****************************************************************************
 bool DckEKeyIsReleased(SDL_Keycode key)
 {
 	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
@@ -79,9 +146,13 @@ bool DckEKeyIsReleased(SDL_Keycode key)
 	return false;
 }
 
-//
-//	MOUSE INPUT STUFF
-//
+//*****************************************************************************
+//  Description:
+//		Checks if the left mouse button is triggered or not
+//	
+//	Return:
+//		Returns true if the left mouse is triggered, false otherwise
+//*****************************************************************************
 bool DckELeftMouseIsTriggered()
 {
 	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
@@ -90,6 +161,13 @@ bool DckELeftMouseIsTriggered()
 	return false;
 }
 
+//*****************************************************************************
+//  Description:
+//		Checks if the left mouse button is down or not
+//	
+//	Return:
+//		Returns true if the left mouse is down, false otherwise
+//*****************************************************************************
 bool DckELeftMouseIsDown()
 {
 	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
@@ -98,6 +176,13 @@ bool DckELeftMouseIsDown()
 	return false;
 }
 
+//*****************************************************************************
+//  Description:
+//		Checks if the left mouse button is released or not
+//	
+//	Return:
+//		Returns true if the left mouse is released, false otherwise
+//*****************************************************************************
 bool DckELeftMouseIsReleased()
 {
 	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
@@ -106,6 +191,13 @@ bool DckELeftMouseIsReleased()
 	return false;
 }
 
+//*****************************************************************************
+//  Description:
+//		Checks if the right mouse button is triggered or not
+//	
+//	Return:
+//		Returns true if the right mouse is triggered, false otherwise
+//*****************************************************************************
 bool DckERightMouseIsTriggered()
 {
 	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
@@ -114,6 +206,13 @@ bool DckERightMouseIsTriggered()
 	return false;
 }
 
+//*****************************************************************************
+//  Description:
+//		Checks if the right mouse button is down or not
+//	
+//	Return:
+//		Returns true if the right mouse is down, false otherwise
+//*****************************************************************************
 bool DckERightMouseIsDown()
 {
 	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
@@ -122,10 +221,61 @@ bool DckERightMouseIsDown()
 	return false;
 }
 
+//*****************************************************************************
+//  Description:
+//		Checks if the right mouse button is released or not
+//	
+//	Return:
+//		Returns true if the right mouse is released, false otherwise
+//*****************************************************************************
 bool DckERightMouseIsReleased()
 {
 	InputSystem* inputSys = dynamic_cast<InputSystem*>(theEngine->GetSystem(System::SysType::InputSys));
 	if (inputSys)
 		return inputSys->RMIsReleased();
 	return false;
+}
+
+//*****************************************************************************
+//  Description:
+//		Sets the current background color
+// 
+//	Param newColor:
+//		The new color to set the background to (rgb)
+//*****************************************************************************
+void DckESetBackColor(glm::vec3 newColor)
+{
+	GraphicsSystem* graphics = dynamic_cast<GraphicsSystem*>(theEngine->GetSystem(System::SysType::GraphicsSys));
+	if (graphics)
+		graphics->SetBackColor(newColor);
+}
+
+//*****************************************************************************
+//  Description:
+//		Gets the current background color
+//	
+//	Return:
+//		Returns the current background color (rgb). Returns black if something
+//		went wrong
+//*****************************************************************************
+glm::vec3 DckEGetBackColor()
+{
+	GraphicsSystem* graphics = dynamic_cast<GraphicsSystem*>(theEngine->GetSystem(System::SysType::GraphicsSys));
+	if (graphics)
+		return graphics->GetBackColor();
+	return glm::vec3(0);
+}
+
+//*****************************************************************************
+//  Description:
+//		Sets the next scene to go to
+//	
+//	Param nextScene:
+//		The scene id of the next scene we want
+//*****************************************************************************
+void DckESetNextScene(SceneID nextScene)
+{
+	SceneSystem* sceneSys = dynamic_cast<SceneSystem*>(theEngine->GetSystem(System::SysType::SceneSys));
+	if (sceneSys)
+		sceneSys->SetNextScene(nextScene);
 }

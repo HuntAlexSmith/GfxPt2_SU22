@@ -7,10 +7,15 @@
 
 #include "Mesh.h"
 
+// Attribute locations, which should always stay constant with layout
 static GLint posAttribLocation = 0;
 static GLint colorAttribLocation = 1;
 static GLint normalAttribLocation = 2;
 
+//*************************************************************************
+//  Description:
+//		Constructor for a mesh class, which generates buffers for meshes
+//*************************************************************************
 Mesh::Mesh() : posAttrib_(posAttribLocation),
 	colorAttrib_(colorAttribLocation),
 	vertices_(),
@@ -30,6 +35,16 @@ Mesh::Mesh() : posAttrib_(posAttribLocation),
 	glGenBuffers(1, &buffers_[faceEBO]);
 }
 
+//*************************************************************************
+//  Description:
+//		Adds a vertex to the mesh
+// 
+//	Param position
+//		The position of the vertex
+// 
+//	Param color
+//		The color of the vertex
+//*************************************************************************
 void Mesh::AddVertex(glm::vec4 position, glm::vec3 color)
 {
 	// Push the position and color onto the vectors
@@ -47,6 +62,12 @@ void Mesh::AddVertex(glm::vec4 position, glm::vec3 color)
 	// glNamedBufferData(buffers_[CBO], vertCount * sizeof(glm::vec3), &(colors_[0]), GL_STATIC_DRAW);
 }
 
+//*************************************************************************
+//  Description:
+//		Adds a point index to the mesh
+//	Param v:
+//		The index of the point being added
+//*************************************************************************
 void Mesh::AddPoint(unsigned int v)
 {
 	int vertCount = GetVertexCount();
@@ -58,6 +79,16 @@ void Mesh::AddPoint(unsigned int v)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * GetPointCount(), &(points_[0]), GL_STATIC_DRAW);
 }
 
+//*************************************************************************
+//  Description:
+//		Adds a pair of edge indices to the mesh
+//	
+//	Param v1:
+//		The first index of the edge being added
+//	
+//	Param v2:
+//		The second index of the edge being added
+//*************************************************************************
 void Mesh::AddEdge(unsigned int v1, unsigned int v2)
 {
 	int vertCount = GetVertexCount();
@@ -70,6 +101,19 @@ void Mesh::AddEdge(unsigned int v1, unsigned int v2)
 	// glNamedBufferData(buffers_[edgeEBO], GetEdgeCount() * sizeof(Edge), &(edges_[0]), GL_STATIC_DRAW);
 }
 
+//*************************************************************************
+//  Description:
+//		Adds a collection of face indices to the mesh
+// 
+//	Param v1:
+//		The first index of the face being added
+// 
+//	Param v2:
+//		The second index of the face being added
+// 
+//	Param v3:
+//		The third index of the face being added
+//*************************************************************************
 void Mesh::AddFace(unsigned int v1, unsigned int v2, unsigned int v3)
 {
 	faces_.push_back(Face(v1, v2, v3));
@@ -78,6 +122,16 @@ void Mesh::AddFace(unsigned int v1, unsigned int v2, unsigned int v3)
 	// glNamedBufferData(buffers_[edgeEBO], GetFaceCount() * sizeof(Face), &(faces_[0]), GL_STATIC_DRAW);
 }
 
+//*************************************************************************
+//  Description:
+//		Gets the vertex data of the vertex at the given index
+// 
+//	Param v:
+//		The index of the vertex to get
+// 
+//	Return:
+//		Returns a pair representing the vertex position and color
+//*************************************************************************
 std::pair<glm::vec4, glm::vec3> Mesh::GetVertex(unsigned int v)
 {
 	if (v < GetVertexCount())
@@ -85,41 +139,98 @@ std::pair<glm::vec4, glm::vec3> Mesh::GetVertex(unsigned int v)
 	return std::pair<glm::vec4, glm::vec3>(glm::vec4(0), glm::vec3(0));
 }
 
+//*************************************************************************
+//  Description:
+//		Gets how many vertices the mesh has
+// 
+//	Return:
+//		The vertex count of the mesh
+//*************************************************************************
 int Mesh::GetVertexCount()
 {
 	return static_cast<int>(vertices_.size());
 }
 
+//*************************************************************************
+//  Description:
+//		Gets how many points the mesh has (different from vertices, this is
+//		for GL_POINTS rendering
+// 
+//	Return:
+//		The point count of the mesh
+//*************************************************************************
 int Mesh::GetPointCount()
 {
 	return points_.size();
 }
 
+//*************************************************************************
+//  Description:
+//		Gets the vertex array of the mesh
+// 
+//	Return:
+//		Returns a pointer to the first vertex in the array
+//*************************************************************************
 glm::vec4* Mesh::GetVertices()
 {
 	return &(vertices_[0]);
 }
 
+//*************************************************************************
+//  Description:
+//		Gets the color array of the mesh
+// 
+//	Return:
+//		Returns a pointer to the first color in the array
+//*************************************************************************
 glm::vec3* Mesh::GetColors()
 {
 	return &(colors_[0]);
 }
 
+//*************************************************************************
+//  Description:
+//		Gets the face array of the mesh
+// 
+//	Return:
+//		Returns a pointer to the first face in the array
+//*************************************************************************
 Mesh::Face* Mesh::GetFaces()
 {
 	return &(faces_[0]);
 }
 
+//*************************************************************************
+//  Description:
+//		Gets the edge array of the mesh
+// 
+//	Return:
+//		Returns a pointer to the first edge in the array
+//*************************************************************************
 int Mesh::GetEdgeCount()
 {
 	return edges_.size();
 }
 
+//*************************************************************************
+//  Description:
+//		Gets the face count of the mesh
+// 
+//	Return:
+//		Returns the number of faces of the mesh
+//*************************************************************************
 int Mesh::GetFaceCount()
 {
 	return faces_.size();
 }
 
+//*************************************************************************
+//  Description:
+//		Gets the face at the specified index
+// 
+//	Param i:
+//		The index of the face values to get
+//*************************************************************************
 Mesh::Face Mesh::GetFace(unsigned int i)
 {
 	if (i < GetFaceCount())
@@ -127,11 +238,28 @@ Mesh::Face Mesh::GetFace(unsigned int i)
 	return Mesh::Face(0, 0, 0);
 }
 
+//*************************************************************************
+//  Description:
+//		Gets the buffer value of the specified buffer
+// 
+//	Param buff:
+//		The buffer to get from the mesh
+//		
+//	Return:
+//		Returns the value of the buffer of the mesh
+//*************************************************************************
 GLuint Mesh::GetBuffer(Buffers buff)
 {
 	return buffers_[buff];
 }
 
+//*************************************************************************
+//  Description:
+//		Generates (if needed) and gets the VAO for points
+// 
+//	Return:
+//		Returns the vao of the mesh for rendering points
+//*************************************************************************
 GLuint Mesh::GetPointVAO()
 {
 	if (!pointVao_)
@@ -155,6 +283,13 @@ GLuint Mesh::GetPointVAO()
 	return pointVao_;
 }
 
+//*************************************************************************
+//  Description:
+//		Generates (if needed) and gets the edge vao of the mesh
+// 
+//	Return:
+//		Returns the vao of the mesh for rendering edges
+//*************************************************************************
 GLuint Mesh::GetEdgeVAO()
 {
 	if (!edgeVao_)
@@ -174,29 +309,18 @@ GLuint Mesh::GetEdgeVAO()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers_[edgeEBO]);
 
 		glBindVertexArray(0);
-		
-		/*
-		glEnableVertexArrayAttrib(edgeVao_, posAttrib);
-		glVertexArrayAttribBinding(edgeVao_, posAttrib, 0);
-		glVertexArrayAttribFormat(edgeVao_, posAttrib, 4, GL_FLOAT, GL_FALSE, 0);
-
-		// Enable the color attribute for the vao
-		glEnableVertexArrayAttrib(edgeVao_, colorAttrib);
-		glVertexArrayAttribBinding(edgeVao_, colorAttrib, 0);
-		glVertexArrayAttribFormat(edgeVao_, colorAttrib, 3, GL_FLOAT, GL_FALSE, 0);
-
-		// Bind buffers to respective attributes 
-		glVertexArrayVertexBuffer(edgeVao_, posAttrib, buffers_[VBO], 0, sizeof(glm::vec4));
-		glVertexArrayVertexBuffer(edgeVao_, colorAttrib, buffers_[CBO], 0, sizeof(glm::vec3));
-
-		// Lastly, bind ebo with vao
-		glVertexArrayElementBuffer(edgeVao_, buffers_[edgeEBO]);
-		*/
 	}
 
 	return edgeVao_;
 }
 
+//*************************************************************************
+//  Description:
+//		Generates (if needed) and gets the face vao of the mesh
+// 
+//	Return:
+//		Returns the vao of the mesh for rendering faces
+//*************************************************************************
 GLuint Mesh::GetFaceVAO()
 {
 	// If there is no vao created yet, get one created for the mesh
@@ -218,60 +342,72 @@ GLuint Mesh::GetFaceVAO()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers_[faceEBO]);
 
 		glBindVertexArray(0);
-
-		/*
-		// Enable the position attribute for the vao
-		glEnableVertexArrayAttrib(faceVao_, posAttrib);
-		glVertexArrayAttribBinding(faceVao_, posAttrib, 0);
-		glVertexArrayAttribFormat(faceVao_, posAttrib, 4, GL_FLOAT, GL_FALSE, 0);
-
-		// Enable the color attribute for the vao
-		glEnableVertexArrayAttrib(faceVao_, colorAttrib);
-		glVertexArrayAttribBinding(faceVao_, colorAttrib, 0);
-		glVertexArrayAttribFormat(faceVao_, colorAttrib, 3, GL_FLOAT, GL_FALSE, 0);
-
-		// Bind buffers to respective attributes 
-		glVertexArrayVertexBuffer(faceVao_, posAttrib, buffers_[VBO], 0, sizeof(glm::vec4));
-		glVertexArrayVertexBuffer(faceVao_, colorAttrib, buffers_[CBO], 0, sizeof(glm::vec3));
-
-		// Lastly, bind ebo with vao
-		glVertexArrayElementBuffer(faceVao_, buffers_[faceEBO]);
-		*/
 	}
 
 	return faceVao_;
 }
 
+//*************************************************************************
+//  Description:
+//		Gets the position attribute location
+// 
+//	Return:
+//		Returns the location of the position attribute
+//*************************************************************************
 GLint Mesh::GetPositionAttrib()
 {
 	return posAttrib_;
 }
 
+//*************************************************************************
+//  Description:
+//		Gets the color attribute location
+// 
+//	Return:
+//		Returns the location of the color attribute
+//*************************************************************************
 GLint Mesh::GetColorAttrib()
 {
 	return colorAttrib_;
 }
 
+//*************************************************************************
+//  Description:
+//		Destructor for a mesh, which deletes all the buffers, as well as
+//		any vaos that were generated
+//*************************************************************************
 Mesh::~Mesh()
 {
-	// Delete all the buffers here if needed
+	// Delete all the buffers
 	glDeleteBuffers(1, &buffers_[faceEBO]);
 	glDeleteBuffers(1, &buffers_[edgeEBO]);
+	glDeleteBuffers(1, &buffers_[pointEBO]);
 	glDeleteBuffers(1, &buffers_[CBO]);
 	glDeleteBuffers(1, &buffers_[VBO]);
 
+	// Delete any vertex arrays that were generated here
 	if (faceVao_)
 		glDeleteVertexArrays(1, &faceVao_);
 
 	if (edgeVao_)
 		glDeleteVertexArrays(1, &edgeVao_);
 
+	if (pointVao_)
+		glDeleteVertexArrays(1, &pointVao_);
+
+	// Clear all the data structures
 	faces_.clear();
 	edges_.clear();
+	points_.clear();
 	colors_.clear();
 	vertices_.clear();
 }
 
+//*************************************************************************
+//  Description:
+//		Constructor for a Normal Mesh, which generates a normal mesh from
+//		a provided mesh
+//*************************************************************************
 NormalMesh::NormalMesh(Mesh* mesh) : Mesh(), normalAttrib_(normalAttribLocation), normals_(), normalBuffer_(0), normalFaceVao_(0)
 {
 	glGenBuffers(1, &normalBuffer_);
@@ -302,6 +438,14 @@ NormalMesh::NormalMesh(Mesh* mesh) : Mesh(), normalAttrib_(normalAttribLocation)
 	}
 }
 
+//*************************************************************************
+//  Description:
+//		Generates (if needed) and gets the normal face vao for rendering
+//		a mesh with normals
+// 
+//	Return:
+//		Returns the vao for rendering a mesh with faces and normals
+//*************************************************************************
 GLuint NormalMesh::GetNormalFaceVAO()
 {
 	if (!normalFaceVao_)
@@ -347,6 +491,11 @@ GLuint NormalMesh::GetNormalFaceVAO()
 	return normalFaceVao_;
 }
 
+//*************************************************************************
+//  Description:
+//		Destructor for the normal mesh, which only needs to handle the
+//		normal buffer, since base mesh can handle the rest
+//*************************************************************************
 NormalMesh::~NormalMesh()
 {
 	glDeleteBuffers(1, &normalBuffer_);

@@ -9,16 +9,58 @@
 #include "GfxMath.h"
 #include <cmath>
 
+//*****************************************************************************
+//  Description:
+//		Creates a 2D or 3D point given certain values
+// 
+//	Param x:
+//		The x value of the point
+// 
+//	Param y:
+//		The y value of the point
+// 
+//	Param z:
+//		The z value of the point (this param can be ignored for a z of 0)
+// 
+//	Return:
+//		A vec4 representing a 2D or 3D point
+//*****************************************************************************
 glm::vec4 GfxMath::Point(float x, float y, float z)
 {
 	return glm::vec4(x, y, z, 1);
 }
 
+//*****************************************************************************
+//  Description:
+//		Creates a 2D or 3D vector given certain values
+// 
+//	Param x:
+//		The x value of the vector
+// 
+//	Param y:
+//		The y value of the vector
+// 
+//	Param z:
+//		The z value of the vector (this param can be ignored for a z of 0)
+// 
+//	Return:
+//		A vec4 representing a 2D or 3D vector
+//*****************************************************************************
 glm::vec4 GfxMath::Vector(float x, float y, float z)
 {
 	return glm::vec4(x, y, z, 0);
 }
 
+//*****************************************************************************
+//  Description:
+//		Generates a 4x4 matrix that translates a point by a given amount
+// 
+//	Param v:
+//		The vector to move the point by
+// 
+//	Return:
+//		A 4x4 matrix that translates a point by a given amount
+//*****************************************************************************
 glm::mat4 GfxMath::Translate(const glm::vec4& v)
 {
 	glm::mat4 result(1);
@@ -29,6 +71,16 @@ glm::mat4 GfxMath::Translate(const glm::vec4& v)
 	return result;
 }
 
+//*****************************************************************************
+//  Description:
+//		Generates a 4x4 2D scale matrix by a given scale
+// 
+//	Param s:
+//		The amount to scale the matrix by
+// 
+//	Return:
+//		A 4x4 matrix that scales a 2D object by a given amount
+//*****************************************************************************
 glm::mat4 GfxMath::Scale2D(float s)
 {
 	glm::mat4 result(1);
@@ -38,6 +90,16 @@ glm::mat4 GfxMath::Scale2D(float s)
 	return result;
 }
 
+//*****************************************************************************
+//  Description:
+//		Generates a 4x4 3D scale matrix by a given scale
+// 
+//	Param s:
+//		The amount to scale the matrix by
+// 
+//	Return:
+//		A 4x4 matrix that scales a 3D object by a given amount
+//*****************************************************************************
 glm::mat4 GfxMath::Scale3D(float s)
 {
 	glm::mat4 result(s);
@@ -46,6 +108,16 @@ glm::mat4 GfxMath::Scale3D(float s)
 	return result;
 }
 
+//*****************************************************************************
+//  Description:
+//		Generates a 4x4 3D scale matrix by a given scale
+// 
+//	Param s:
+//		The amount to scale the matrix by
+// 
+//	Return:
+//		A 4x4 matrix that scales an object by a given amount
+//*****************************************************************************
 glm::mat4 GfxMath::Scale(float sx, float sy, float sz)
 {
 	glm::mat4 result(1);
@@ -56,6 +128,17 @@ glm::mat4 GfxMath::Scale(float sx, float sy, float sz)
 	return result;
 }
 
+//*****************************************************************************
+//  Description:
+//		Generates a 4x4 2D Rotation matrix that rotates a 2D object by a given
+//		amount
+// 
+//	Param angle:
+//		The amount to rotate the object by in degrees
+// 
+//	Return:
+//		A 4x4 matrix that rotates a 2D object by a given amount
+//*****************************************************************************
 glm::mat4 GfxMath::Rotate2D(float angle)
 {
 	glm::mat4 result(1);
@@ -69,6 +152,19 @@ glm::mat4 GfxMath::Rotate2D(float angle)
 	return result;
 }
 
+//*****************************************************************************
+//  Description:
+//		Generates a 4x4 3D rotation matrix by a given amount
+// 
+//	Param rotVec:
+//		The vector to rotate around in 3D
+// 
+//	Param angle:
+//		The amount to rotate the object by in degrees
+// 
+//	Return:
+//		A 4x4 matrix that rotates a 3D object around a given vector
+//*****************************************************************************
 glm::mat4 GfxMath::Rotate3D(const glm::vec4 &rotVec, float angle)
 {
 	// Convert the angle to radians
@@ -100,11 +196,40 @@ glm::mat4 GfxMath::Rotate3D(const glm::vec4 &rotVec, float angle)
 	return result;
 }
 
+//*****************************************************************************
+//  Description:
+//		Generates a 4x4 Affine matrix given 4 column vectors
+// 
+//	Param v1:
+//		the first column vector
+// 
+//	Param v2:
+//		The second column vector
+// 
+//	Param v3:
+//		The third column vector
+// 
+//	Param v4:
+//		The fourth column vector
+// 
+//	Return:
+//		A 4x4 affine matrix made up of the given column vectors
+//*****************************************************************************
 glm::mat4 GfxMath::Affine(const glm::vec4& v1, const glm::vec4& v2, const glm::vec4& v3, const glm::vec4& v4)
 {
 	return glm::mat4(v1, v2, v3, v4);
 }
 
+//*****************************************************************************
+//  Description:
+//		Inverses a given 4x4 affine matrix
+// 
+//	Param affine:
+//		The affine matrix to inverse
+// 
+//	Return:
+//		Returns the given affine matrix inversed
+//*****************************************************************************
 glm::mat4 GfxMath::AffineInverse(const glm::mat4& affine)
 {
 	// Inverse the linear part of the matrix
@@ -120,6 +245,16 @@ glm::mat4 GfxMath::AffineInverse(const glm::mat4& affine)
 	return linearInvTrans * invTrans;
 }
 
+//*****************************************************************************
+//  Description:
+//		Generates a normal matrix given a modeling matrix
+// 
+//	Param trans:
+//		The modeling matrix to get a normal matrix from
+// 
+//	Return:
+//		Returns a 4x4 matrix that will map object space normals to world norms
+//*****************************************************************************
 glm::mat4 GfxMath::NormalMatrix(const glm::mat4& trans)
 {
 	return glm::mat4(
@@ -131,6 +266,19 @@ glm::mat4 GfxMath::NormalMatrix(const glm::mat4& trans)
 	);
 }
 
+//*****************************************************************************
+//  Description:
+//		Calculates the cross product between two vectors
+//	
+//	Param u:
+//		The first vector to cross product
+// 
+//	Param v:
+//		The second vector to cross product
+// 
+//	Return:
+//		Returns a vec4 that represents the result of the cross product
+//*****************************************************************************
 glm::vec4 GfxMath::CrossProduct(const glm::vec4& u, const glm::vec4& v)
 {
 	glm::vec3 u3(u);

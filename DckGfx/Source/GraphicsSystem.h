@@ -9,6 +9,7 @@
 
 #include "System.h"
 #include "Shader.h"
+#include "GfxMath.h"
 
 class GraphicsSystem : public System {
 public:
@@ -21,10 +22,14 @@ public:
 
 	Shader* GetActiveShader();
 
+	void SetBackColor(glm::vec3 newColor);
+	glm::vec3 GetBackColor();
+
 	~GraphicsSystem();
 
 private:
 
 	Shader* activeShader_;
+	glm::vec3 backColor_;
 
 };

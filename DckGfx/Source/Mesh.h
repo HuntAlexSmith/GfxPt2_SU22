@@ -10,14 +10,27 @@
 #include "GfxMath.h"
 #include <vector>
 
+//*****************************************************************************
+//  Description:
+//		Enum for what types of rendering there are for a mesh
+//*****************************************************************************
 enum RenderType {
 	Points,
 	Lines,
 	Triangles
 };
 
+//*****************************************************************************
+//  Description:
+//		Class for meshes, which manages the OpenGL buffers, as well as all the
+//		vertex, point, edge, and face data needed for the mesh
+//*****************************************************************************
 class Mesh {
 public:
+	//*************************************************************************
+	//  Description:
+	//		Enum for what buffers are where for the array
+	//*************************************************************************
 	enum Buffers {
 		VBO,
 		CBO,
@@ -27,12 +40,20 @@ public:
 		BuffCount
 	};
 
+	//*************************************************************************
+	//  Description:
+	//		Edge struct for holding Edge vertex ordering data
+	//*************************************************************************
 	struct Edge {
 		unsigned int v1;
 		unsigned int v2;
 		Edge(unsigned int v1, unsigned int v2) : v1(v1), v2(v2) {}
 	};
 
+	//*************************************************************************
+	//  Description:
+	//		Face struct for holding Face vertex ordering data
+	//*************************************************************************
 	struct Face {
 		unsigned int v1;
 		unsigned int v2;
@@ -87,6 +108,11 @@ private:
 	GLuint pointVao_, edgeVao_, faceVao_;
 };
 
+//*************************************************************************
+//  Description:
+//		Normal mesh class, which derives from the mesh class and handles
+//		normals for a mesh as well as everything the mesh class handles
+//*************************************************************************
 class NormalMesh : public Mesh {
 public:
 

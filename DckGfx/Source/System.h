@@ -19,6 +19,7 @@ public:
 		CameraSys,
 		GraphicsSys,
 		RenderSys,
+		SceneSys,
 		SystemCount
 	};
 

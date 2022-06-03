@@ -34,6 +34,9 @@
     <Filter Include="Source Files\Graphics\Camera">
       <UniqueIdentifier>{34c7c334-68ba-4b2e-bbac-27884cc6fb5a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Scenes">
+      <UniqueIdentifier>{568d4a29-291d-42f0-a094-c75d5b5cda4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -84,6 +87,15 @@
     <ClCompile Include="Source\CameraSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SceneSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene1.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene2.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Stub.h">
@@ -127,6 +139,18 @@
     </ClInclude>
     <ClInclude Include="Source\CameraSystem.h">
       <Filter>Source Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneSystem.h">
+      <Filter>Source Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene1.h">
+      <Filter>Source Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene2.h">
+      <Filter>Source Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneList.h">
+      <Filter>Source Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

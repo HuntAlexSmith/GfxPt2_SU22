@@ -13,7 +13,9 @@
 #include <stdexcept>
 #include <iostream>
 
-GraphicsSystem::GraphicsSystem() : System(SysType::GraphicsSys), activeShader_(nullptr)
+GraphicsSystem::GraphicsSystem() : System(SysType::GraphicsSys),
+	activeShader_(nullptr),
+	backColor_(glm::vec3(0.5, 0.5, 0.5))
 {
 }
 
@@ -49,7 +51,7 @@ void GraphicsSystem::Initialize()
 void GraphicsSystem::Update(float dt)
 {
 	// Make sure to clear the screen and the depth buffer
-	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+	glClearColor(backColor_.r, backColor_.g, backColor_.b, 1.0f);
 	glClearDepth(1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -70,4 +72,14 @@ Shader* GraphicsSystem::GetActiveShader()
 GraphicsSystem::~GraphicsSystem()
 {
 
+}
+
+void GraphicsSystem::SetBackColor(glm::vec3 newColor)
+{
+	backColor_ = newColor;
+}
+
+glm::vec3 GraphicsSystem::GetBackColor()
+{
+	return backColor_;
 }

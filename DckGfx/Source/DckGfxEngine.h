@@ -2,7 +2,7 @@
 //*****************************************************************************
 //	File:   DckGfxEngine.h
 //  Author: Hunter Smith
-//  Date:   05/27/2022
+//  Date:   06/02/2022
 //  Description: File for containing the static engine object and having
 //		funtions for the user to interact with the engine as needed.
 //*****************************************************************************
@@ -10,6 +10,8 @@
 #include "Engine.h"
 #include "Mesh.h"
 #include "SDL2/SDL.h"
+#include "GfxMath.h"
+#include "SceneList.h"
 
 void DckEInitialize();
 void DckEUpdate(float dt);
@@ -30,3 +32,8 @@ bool DckELeftMouseIsReleased();
 bool DckERightMouseIsTriggered();
 bool DckERightMouseIsDown();
 bool DckERightMouseIsReleased();
+
+void DckESetBackColor(glm::vec3 newColor);
+glm::vec3 DckEGetBackColor();
+
+void DckESetNextScene(SceneID nextScene);

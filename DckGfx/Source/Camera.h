@@ -8,6 +8,11 @@
 
 #include "GfxMath.h"
 
+//*****************************************************************************
+//  Description:
+//		Camera class, which handles all the data required for a 3D camera, as
+//		well as any modification functions for moving the camera
+//*****************************************************************************
 class Camera {
 public:
 
@@ -27,7 +32,7 @@ public:
 	glm::vec4 GetLookAt();
 	glm::vec4 GetEyePoint();
 
-	glm::mat4 GetWorldToCamMatrix();
+	glm::mat4 GetCamToWorldMatrix();
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetPerspMatrix();
 
@@ -39,12 +44,12 @@ private:
 	void SetDirtyFlags(bool val);
 
 	// Matrices from camera
-	glm::mat4 worldToCamMat_;
+	glm::mat4 camToWorldMat_;
 	glm::mat4 viewMat_;
 	glm::mat4 perspMat_;
 
 	// Dirty flags for matrices
-	bool worldToCamIsDirty_;
+	bool camToWorldIsDirty_;
 	bool viewIsDirty_;
 	bool perspIsDirty_;
 

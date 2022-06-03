@@ -2,7 +2,7 @@
 //*****************************************************************************
 //	File:   Engine.h
 //  Author: Hunter Smith
-//  Date:   05/26/2022
+//  Date:   06/02/2022
 //  Description: Engine class for containing the systems that will help manage
 //		everything
 //*****************************************************************************
@@ -10,6 +10,11 @@
 #include "System.h"
 #include "Mesh.h"
 
+//*****************************************************************************
+//  Description:
+//		The engine class, which contains systems that will be allocated,
+//		initialized, updated, shutdown, and deallocated by the engine.
+//*****************************************************************************
 class Engine {
 public:
 
@@ -32,7 +37,7 @@ public:
 
 private:
 
-	System* systems_[System::SysType::SystemCount];
-	bool isRunning_;
+	System* systems_[System::SysType::SystemCount]; // The container of systems
+	bool isRunning_;                                // Whether or not the engine is running
 
 };
