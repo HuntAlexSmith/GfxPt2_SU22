@@ -10,6 +10,7 @@
 #include "InputSystem.h"
 #include "GraphicsSystem.h"
 #include "SceneSystem.h"
+#include "ShaderLib.h"
 #include <iostream>
 #include <stdexcept>
 
@@ -25,7 +26,10 @@ void DckEInitialize()
 {
 	theEngine = new Engine();
 	if (theEngine)
+	{
 		theEngine->Initialize();
+		ShaderLibraryInit();
+	}
 	else
 	{
 		std::cout << "Dck Engine failed to initialize" << std::endl;
@@ -55,6 +59,7 @@ void DckEShutdown()
 {
 	if (theEngine)
 	{
+		ShaderLibraryShutdown();
 		theEngine->Shutdown();
 		delete theEngine;
 	}

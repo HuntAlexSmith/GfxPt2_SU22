@@ -20,6 +20,7 @@ public:
 	void Update(float dt) override;
 	void Shutdown() override;
 
+	void SetActiveShader(Shader* shader);
 	Shader* GetActiveShader();
 
 	void SetBackColor(glm::vec3 newColor);

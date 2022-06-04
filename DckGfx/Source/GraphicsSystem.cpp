@@ -10,6 +10,7 @@
 #include "WindowSystem.h"
 #include "Engine.h"
 #include "SDL2/SDL.h"
+#include "ShaderLib.h"
 #include <stdexcept>
 #include <iostream>
 
@@ -42,14 +43,15 @@ void GraphicsSystem::Initialize()
 		windowSys->GetWindowSize(&w, &h);
 		glViewport(0, 0, w, h);
 	}
-
-	// For now, create and delete shader here. Will later have a shader manager
-	activeShader_ = new Shader("Data/3dShader.vert", "Data/3dShader.frag");
-	activeShader_->Use();
 }
 
 void GraphicsSystem::Update(float dt)
 {
+	if (!activeShader_)
+	{
+		activeShader_ = ShaderLibraryGet("Default Shader");
+	}
+
 	// Make sure to clear the screen and the depth buffer
 	glClearColor(backColor_.r, backColor_.g, backColor_.b, 1.0f);
 	glClearDepth(1);
@@ -61,7 +63,13 @@ void GraphicsSystem::Update(float dt)
 
 void GraphicsSystem::Shutdown()
 {
-	delete activeShader_;
+}
+
+void GraphicsSystem::SetActiveShader(Shader* shader)
+{
+	activeShader_ = shader;
+	if (activeShader_)
+		activeShader_->Use();
 }
 
 Shader* GraphicsSystem::GetActiveShader()

@@ -18,6 +18,7 @@ public:
 		InputSys,
 		CameraSys,
 		GraphicsSys,
+		LightingSys,
 		RenderSys,
 		SceneSys,
 		SystemCount

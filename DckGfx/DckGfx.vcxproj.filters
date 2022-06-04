@@ -37,6 +37,9 @@
     <Filter Include="Source Files\Scenes">
       <UniqueIdentifier>{568d4a29-291d-42f0-a094-c75d5b5cda4b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Data Libraries">
+      <UniqueIdentifier>{734c7205-cd30-4b04-b96f-ecb6a4461e70}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -59,9 +62,6 @@
     </ClCompile>
     <ClCompile Include="Source\GfxMath.cpp">
       <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\System.cpp">
-      <Filter>Source Files\Systems</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine.cpp">
       <Filter>Source Files\Engine</Filter>
@@ -95,6 +95,12 @@
     </ClCompile>
     <ClCompile Include="Source\Scene2.cpp">
       <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LightingSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ShaderLib.cpp">
+      <Filter>Source Files\Data Libraries</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +157,15 @@
     </ClInclude>
     <ClInclude Include="Source\SceneList.h">
       <Filter>Source Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LightingSystem.h">
+      <Filter>Source Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Library.h">
+      <Filter>Source Files\Data Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ShaderLib.h">
+      <Filter>Source Files\Data Libraries</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

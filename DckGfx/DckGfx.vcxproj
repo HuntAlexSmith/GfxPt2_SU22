@@ -160,6 +160,7 @@
     <ClCompile Include="Source\glad.c" />
     <ClCompile Include="Source\GraphicsSystem.cpp" />
     <ClCompile Include="Source\InputSystem.cpp" />
+    <ClCompile Include="Source\LightingSystem.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\RenderSystem.cpp" />
@@ -167,8 +168,8 @@
     <ClCompile Include="Source\Scene2.cpp" />
     <ClCompile Include="Source\SceneSystem.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
+    <ClCompile Include="Source\ShaderLib.cpp" />
     <ClCompile Include="Source\Stub.cpp" />
-    <ClCompile Include="Source\System.cpp" />
     <ClCompile Include="Source\WindowSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -180,6 +181,8 @@
     <ClInclude Include="Source\GfxMath.h" />
     <ClInclude Include="Source\GraphicsSystem.h" />
     <ClInclude Include="Source\InputSystem.h" />
+    <ClInclude Include="Source\Library.h" />
+    <ClInclude Include="Source\LightingSystem.h" />
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\RenderSystem.h" />
     <ClInclude Include="Source\Scene1.h" />
@@ -187,6 +190,7 @@
     <ClInclude Include="Source\SceneList.h" />
     <ClInclude Include="Source\SceneSystem.h" />
     <ClInclude Include="Source\Shader.h" />
+    <ClInclude Include="Source\ShaderLib.h" />
     <ClInclude Include="Source\Stub.h" />
     <ClInclude Include="Source\System.h" />
     <ClInclude Include="Source\WindowSystem.h" />
