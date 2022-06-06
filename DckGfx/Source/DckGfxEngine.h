@@ -8,7 +8,7 @@
 //*****************************************************************************
 
 #include "Engine.h"
-#include "Mesh.h"
+#include "MeshLib.h"
 #include "SDL2/SDL.h"
 #include "GfxMath.h"
 #include "SceneList.h"
@@ -19,7 +19,7 @@ void DckEShutdown();
 
 bool DckEIsRunning();
 
-void DckERender(Mesh* mesh, RenderType type, glm::mat4 modelMat);
+void DckERender(DckMesh* mesh, RenderType type, glm::mat4 modelMat);
 
 bool DckEKeyIsTriggered(SDL_Keycode key);
 bool DckEKeyIsDown(SDL_Keycode key);

@@ -9,7 +9,7 @@
 
 #include "System.h"
 #include "Camera.h"
-#include "Mesh.h"
+#include "MeshLib.h"
 #include <map>
 
 class CameraSystem : public System {
@@ -32,7 +32,7 @@ private:
 	glm::ivec4 currMousePos_;
 
 	// Orientation mesh, which is used to understand 
-	Mesh* orientationMesh_;
+	DckMesh* oMesh_;
 	
 	// A map of all the Cameras being managed by the system
 	std::map<unsigned int, Camera*> cameras_;

@@ -144,9 +144,8 @@ void RenderSystem::Shutdown()
 
 }
 
-void RenderSystem::Render(Mesh* mesh, RenderType type, glm::mat4 objToWorld)
+void RenderSystem::Render(DckMesh* mesh, RenderType type, glm::mat4 objToWorld)
 {
-	NormalMesh* normMesh = dynamic_cast<NormalMesh*>(mesh);
 	glm::mat4 normMat = GfxMath::NormalMatrix(objToWorld);
 	switch (type)
 	{
@@ -157,17 +156,16 @@ void RenderSystem::Render(Mesh* mesh, RenderType type, glm::mat4 objToWorld)
 			renderQueue_.push(RenderData(mesh->GetEdgeVAO(), mesh->GetEdgeCount(), type, 1, objToWorld, normMat));
 			break;
 		case RenderType::Triangles:
-			if (normMesh)
-				renderQueue_.push(RenderData(normMesh->GetNormalFaceVAO(), normMesh->GetFaceCount(), type, 0, objToWorld, normMat));
+			if (mesh->HasNormals())
+				renderQueue_.push(RenderData(mesh->GetFaceVAO(), mesh->GetFaceCount(), type, 0, objToWorld, normMat));
 			else
 				renderQueue_.push(RenderData(mesh->GetFaceVAO(), mesh->GetFaceCount(), type, 1, objToWorld, normMat));
 			break;
 	}
 }
 
-void RenderSystem::RenderDebug(Mesh* mesh, RenderType type, glm::mat4 objToWorld)
+void RenderSystem::RenderDebug(DckMesh* mesh, RenderType type, glm::mat4 objToWorld)
 {
-	NormalMesh* normMesh = dynamic_cast<NormalMesh*>(mesh);
 	glm::mat4 normMat = GfxMath::NormalMatrix(objToWorld);
 	switch (type)
 	{
@@ -178,8 +176,8 @@ void RenderSystem::RenderDebug(Mesh* mesh, RenderType type, glm::mat4 objToWorld
 		debugQueue_.push(RenderData(mesh->GetEdgeVAO(), mesh->GetEdgeCount(), type, 1, objToWorld, normMat));
 		break;
 	case RenderType::Triangles:
-		if (normMesh)
-			debugQueue_.push(RenderData(normMesh->GetNormalFaceVAO(), normMesh->GetFaceCount(), type, 0, objToWorld, normMat));
+		if (mesh->HasNormals())
+			debugQueue_.push(RenderData(mesh->GetFaceVAO(), mesh->GetFaceCount(), type, 0, objToWorld, normMat));
 		else
 			debugQueue_.push(RenderData(mesh->GetFaceVAO(), mesh->GetFaceCount(), type, 1, objToWorld, normMat));
 		break;

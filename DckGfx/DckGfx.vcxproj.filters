@@ -102,6 +102,9 @@
     <ClCompile Include="Source\ShaderLib.cpp">
       <Filter>Source Files\Data Libraries</Filter>
     </ClCompile>
+    <ClCompile Include="Source\MeshLib.cpp">
+      <Filter>Source Files\Data Libraries</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Stub.h">
@@ -165,6 +168,9 @@
       <Filter>Source Files\Data Libraries</Filter>
     </ClInclude>
     <ClInclude Include="Source\ShaderLib.h">
+      <Filter>Source Files\Data Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MeshLib.h">
       <Filter>Source Files\Data Libraries</Filter>
     </ClInclude>
   </ItemGroup>

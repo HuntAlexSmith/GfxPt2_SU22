@@ -78,6 +78,8 @@ public:
 
 	glm::vec4* GetVertices();
 	glm::vec3* GetColors();
+	unsigned int* GetPoints();
+	Mesh::Edge* GetEdges();
 	Mesh::Face* GetFaces();
 
 	GLuint GetPointVAO();
@@ -117,6 +119,8 @@ class NormalMesh : public Mesh {
 public:
 
 	NormalMesh(Mesh* mesh);
+
+	glm::vec4* GetNormals();
 
 	GLuint GetNormalFaceVAO();
 

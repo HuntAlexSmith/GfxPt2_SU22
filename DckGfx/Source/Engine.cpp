@@ -150,7 +150,7 @@ void Engine::SetIsRunning(bool running)
 //	Param modelMat:
 //		The object to world transformation matrix
 //*****************************************************************************
-void Engine::Render(Mesh* mesh, RenderType type, glm::mat4 modelMat)
+void Engine::Render(DckMesh* mesh, RenderType type, glm::mat4 modelMat)
 {
 	RenderSystem* renderSys = dynamic_cast<RenderSystem*>(systems_[System::SysType::RenderSys]);
 	if (renderSys)
@@ -171,7 +171,7 @@ void Engine::Render(Mesh* mesh, RenderType type, glm::mat4 modelMat)
 //	Param modelMat:
 //		The Object to World transformation matrix
 //*****************************************************************************
-void Engine::DebugRender(Mesh* mesh, RenderType type, glm::mat4 modelMat)
+void Engine::DebugRender(DckMesh* mesh, RenderType type, glm::mat4 modelMat)
 {
 	RenderSystem* renderSys = dynamic_cast<RenderSystem*>(systems_[System::SysType::RenderSys]);
 	if (renderSys)

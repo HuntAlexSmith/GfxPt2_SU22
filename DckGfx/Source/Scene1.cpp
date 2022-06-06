@@ -75,24 +75,13 @@ static const Mesh::Face cubeFaces[] = {
 static Mesh* my3DMesh;
 static Mesh* myNormMesh;
 
+static DckMesh* render3DMesh;
+static DckMesh* renderNormMesh;
+
 void Scene1Load()
 {
-	// Create a new mesh
-	my3DMesh = new Mesh();
-
-	// Create the 3D Mesh
-	for (int i = 0; i < 8; ++i)
-	{
-		my3DMesh->AddVertex(cubeVertices[i], cubeColors[i]);
-	}
-	for (int i = 0; i < 12; ++i)
-	{
-		my3DMesh->AddEdge(cubeEdges[i].v1, cubeEdges[i].v2);
-		my3DMesh->AddFace(cubeFaces[i].v1, cubeFaces[i].v2, cubeFaces[i].v3);
-	}
-
-	// Create a normal mesh from the previous mesh
-	myNormMesh = new NormalMesh(my3DMesh);
+	render3DMesh = MeshLibraryGet("Cube");
+	renderNormMesh = MeshLibraryGet("NormCube");
 }
 
 void Scene1Init()
@@ -118,12 +107,12 @@ void Scene1Update(float dt)
 	// Calculate a new model matrix for the mesh and render it
 	glm::vec4 move = GfxMath::Point(3, 0, 0);
 	glm::mat4 fullTrans = GfxMath::Translate(move) * GfxMath::Rotate3D(diagAxis, rotation);
-	DckERender(my3DMesh, RenderType::Triangles, fullTrans);
+	DckERender(render3DMesh, RenderType::Triangles, fullTrans);
 
 	// Calculate a new model matrix for the mesh and render it
 	glm::vec4 otherMove = GfxMath::Point(-3, 0, 0);
 	glm::mat4 otherTrans = GfxMath::Translate(otherMove) * GfxMath::Rotate3D(diagAxis, -rotation);
-	DckERender(myNormMesh, RenderType::Triangles, otherTrans);
+	DckERender(renderNormMesh, RenderType::Triangles, otherTrans);
 }
 
 void Scene1Shutdown()
@@ -133,6 +122,4 @@ void Scene1Shutdown()
 
 void Scene1Unload()
 {
-	delete myNormMesh;
-	delete my3DMesh;
 }

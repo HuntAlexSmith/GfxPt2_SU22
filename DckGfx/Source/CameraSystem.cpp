@@ -25,14 +25,10 @@ static const glm::vec4 xDir = GfxMath::Point(1, 0, 0);
 static const glm::vec4 yDir = GfxMath::Point(0, 1, 0);
 static const glm::vec4 zDir = GfxMath::Point(0, 0, 1);
 
-static const glm::vec4 xVec = GfxMath::Vector(1, 0, 0);
-static const glm::vec4 yVec = GfxMath::Vector(0, 1, 0);
-static const glm::vec4 zVec = GfxMath::Vector(0, 0, 1);
-
 CameraSystem::CameraSystem() : System(SysType::CameraSys),
 	prevMousePos_(GfxMath::Point(0, 0)),
 	currMousePos_(GfxMath::Point(0, 0)),
-	orientationMesh_(nullptr),
+	oMesh_(nullptr),
 	cameras_(),
 	activeCam_(nullptr)
 {
@@ -51,25 +47,9 @@ void CameraSystem::Initialize()
 
 void CameraSystem::Update(float dt)
 {
-	if (!orientationMesh_)
+	if (!oMesh_)
 	{
-		// Create the orientation mesh
-		orientationMesh_ = new Mesh();
-
-		orientationMesh_->AddVertex(center, red);
-		orientationMesh_->AddVertex(center, green);
-		orientationMesh_->AddVertex(center, blue);
-		orientationMesh_->AddVertex(xDir, red);
-		orientationMesh_->AddVertex(yDir, green);
-		orientationMesh_->AddVertex(zDir, blue);
-
-		orientationMesh_->AddPoint(3);
-		orientationMesh_->AddPoint(4);
-		orientationMesh_->AddPoint(5);
-
-		orientationMesh_->AddEdge(0, 3);
-		orientationMesh_->AddEdge(1, 4);
-		orientationMesh_->AddEdge(2, 5);
+		oMesh_ = MeshLibraryGet("CamOMesh");
 	}
 
 	// Handle any input for the current camera here
@@ -134,8 +114,8 @@ void CameraSystem::Update(float dt)
 	glm::mat4 translation = translate;
 
 	// Render the mesh
-	GetParent()->DebugRender(orientationMesh_, RenderType::Points, translation);
-	GetParent()->DebugRender(orientationMesh_, RenderType::Lines, translation);
+	GetParent()->DebugRender(oMesh_, RenderType::Points, translation);
+	GetParent()->DebugRender(oMesh_, RenderType::Lines, translation);
 }
 
 void CameraSystem::Shutdown()
@@ -147,9 +127,6 @@ void CameraSystem::Shutdown()
 			delete cam.second;
 	}
 	cameras_.clear();
-
-	if (orientationMesh_)
-		delete orientationMesh_;
 }
 
 Camera* CameraSystem::GetActiveCamera()

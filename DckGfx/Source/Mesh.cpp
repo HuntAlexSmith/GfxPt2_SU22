@@ -190,6 +190,30 @@ glm::vec3* Mesh::GetColors()
 
 //*************************************************************************
 //  Description:
+//		Gets the point array of the mesh
+// 
+//	Return:
+//		Returns a pointer to the first point in the array
+//*************************************************************************
+unsigned int* Mesh::GetPoints()
+{
+	return &(points_[0]);
+}
+
+//*************************************************************************
+//  Description:
+//		Gets the edge array of the mesh
+// 
+//	Return:
+//		Returns a pointer to the first edge in the array
+//*************************************************************************
+Mesh::Edge* Mesh::GetEdges()
+{
+	return &(edges_[0]);
+}
+
+//*************************************************************************
+//  Description:
 //		Gets the face array of the mesh
 // 
 //	Return:
@@ -436,6 +460,18 @@ NormalMesh::NormalMesh(Mesh* mesh) : Mesh(), normalAttrib_(normalAttribLocation)
 		normals_.push_back(normal);
 		normals_.push_back(normal);
 	}
+}
+
+//*************************************************************************
+//  Description:
+//		Gets the normal array of the mesh
+// 
+//	Return:
+//		Returns a pointer to the first normal in the array
+//*************************************************************************
+glm::vec4* NormalMesh::GetNormals()
+{
+	return &(normals_[0]);
 }
 
 //*************************************************************************

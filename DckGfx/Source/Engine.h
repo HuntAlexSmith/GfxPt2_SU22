@@ -8,7 +8,7 @@
 //*****************************************************************************
 
 #include "System.h"
-#include "Mesh.h"
+#include "MeshLib.h"
 
 //*****************************************************************************
 //  Description:
@@ -30,8 +30,8 @@ public:
 	bool IsRunning();
 	void SetIsRunning(bool running);
 
-	void Render(Mesh* mesh, RenderType type, glm::mat4 modelMat);
-	void DebugRender(Mesh* mesh, RenderType type, glm::mat4 modelMat);
+	void Render(DckMesh* mesh, RenderType type, glm::mat4 modelMat);
+	void DebugRender(DckMesh* mesh, RenderType type, glm::mat4 modelMat);
 
 	~Engine();
 

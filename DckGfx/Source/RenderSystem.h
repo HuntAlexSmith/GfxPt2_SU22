@@ -8,7 +8,7 @@
 //*****************************************************************************
 
 #include "System.h"
-#include "Mesh.h"
+#include "MeshLib.h"
 #include <queue>
 
 class RenderSystem : public System {
@@ -38,8 +38,8 @@ public:
 	void Update(float dt) override;
 	void Shutdown() override;
 
-	void Render(Mesh* mesh, RenderType type, glm::mat4 objToWorld);
-	void RenderDebug(Mesh* mesh, RenderType type, glm::mat4 objToWorld);
+	void Render(DckMesh* mesh, RenderType type, glm::mat4 objToWorld);
+	void RenderDebug(DckMesh* mesh, RenderType type, glm::mat4 objToWorld);
 
 	~RenderSystem();
 

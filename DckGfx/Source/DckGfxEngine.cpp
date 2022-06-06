@@ -11,6 +11,7 @@
 #include "GraphicsSystem.h"
 #include "SceneSystem.h"
 #include "ShaderLib.h"
+#include "MeshLib.h"
 #include <iostream>
 #include <stdexcept>
 
@@ -29,6 +30,7 @@ void DckEInitialize()
 	{
 		theEngine->Initialize();
 		ShaderLibraryInit();
+		MeshLibraryInit();
 	}
 	else
 	{
@@ -59,6 +61,7 @@ void DckEShutdown()
 {
 	if (theEngine)
 	{
+		MeshLibraryShutdown();
 		ShaderLibraryShutdown();
 		theEngine->Shutdown();
 		delete theEngine;
@@ -91,7 +94,7 @@ bool DckEIsRunning()
 //	Param modelMat:
 //		The Object to World matrix for the mesh
 //*****************************************************************************
-void DckERender(Mesh* mesh, RenderType type, glm::mat4 modelMat)
+void DckERender(DckMesh* mesh, RenderType type, glm::mat4 modelMat)
 {
 	if (theEngine)
 		theEngine->Render(mesh, type, modelMat);
