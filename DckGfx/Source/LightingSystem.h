@@ -9,20 +9,12 @@
 
 #include "System.h"
 #include "GfxMath.h"
+#include "glad/glad.h"
 
 static const int maxLights = 10;
 
 class LightingSystem : public System {
 public:
-
-	struct Light {
-		glm::vec4 lightPos;
-		glm::vec3 lightColor;
-
-		Light() : lightPos(0), lightColor(0) {}
-
-		Light(glm::vec4 pos, glm::vec3 color) : lightPos(pos), lightColor(color) {}
-	};
 
 	LightingSystem();
 
@@ -30,12 +22,21 @@ public:
 	void Update(float dt) override;
 	void Shutdown() override;
 
+	bool IsActive();
+
 	~LightingSystem();
 
 private:
 
-	// Static array of lights
-	Light lights_[maxLights];
+	// Shader for lighting
+	Shader* phongShader_;
+
+	// Static array of lights (pos and color
+	glm::vec4 lightPos_[maxLights];
+	glm::vec3 lightColor_[maxLights];
+
+	// Ambient color
+	glm::vec3 ambientColor_;
 
 	// How many lights are being used
 	int lightCount_;

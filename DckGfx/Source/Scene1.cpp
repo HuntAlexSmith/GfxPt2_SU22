@@ -14,7 +14,7 @@ static float rotation = 0.0f;
 glm::vec4 diagAxis = GfxMath::Vector(1, 1, 1);
 
 // Color
-static glm::vec3 gray(0.5f, 0.5f, 0.5f);
+static glm::vec3 gray(0.2f, 0.2f, 0.2f);
 
 // Vertices of the cube
 static const glm::vec4 cubeVertices[] = {

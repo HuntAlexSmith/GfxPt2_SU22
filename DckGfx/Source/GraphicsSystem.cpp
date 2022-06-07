@@ -49,7 +49,7 @@ void GraphicsSystem::Update(float dt)
 {
 	if (!activeShader_)
 	{
-		activeShader_ = ShaderLibraryGet("Default Shader");
+		activeShader_ = ShaderLibraryGet("Phong Shader");
 	}
 
 	// Make sure to clear the screen and the depth buffer

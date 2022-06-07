@@ -40,11 +40,11 @@ ShaderLib::ShaderLib() : shaders_()
 void ShaderLib::Initialize()
 {
 	// Create and add the default shader to the shader manager
-	Shader* defaultShader = new Shader("Data/3dShader.vert", "Data/3dShader.frag");
+	Shader* defaultShader = new Shader("Data/Shaders/3dShader.vert", "Data/Shaders/3dShader.frag");
 	AddObject("Default Shader", defaultShader);
 
 	// Create and add the lighting shader to the shader manager
-	Shader* phongShader = new Shader("Data/PhongShader.vert", "Data/PhongShader.frag");
+	Shader* phongShader = new Shader("Data/Shaders/PhongShader.vert", "Data/Shaders/PhongShader.frag");
 	AddObject("Phong Shader", phongShader);
 }
 

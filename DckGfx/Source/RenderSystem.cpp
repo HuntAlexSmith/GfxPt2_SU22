@@ -8,9 +8,14 @@
 
 #include "RenderSystem.h"
 #include "InputSystem.h"
+#include "LightingSystem.h"
 #include "GraphicsSystem.h"
 #include "CameraSystem.h"
 #include "Engine.h"
+
+static glm::vec3 diff(1.0f, 1.0f, 0.2f);
+static glm::vec3 specular(0.5f, 0.5f, 0.5f);
+static float specExp = 0.5f;
 
 RenderSystem::RenderSystem() : System(SysType::RenderSys),
 	renderQueue_(),
@@ -53,6 +58,19 @@ void RenderSystem::Update(float dt)
 	// Get the active shader
 	Shader* shader = graphicSys->GetActiveShader();
 	shader->Use();
+
+	// Get the Lighting System and see if we need to upload diffuse and specular data
+	LightingSystem* lightSys = dynamic_cast<LightingSystem*>(GetParent()->GetSystem(LightingSys));
+	if (lightSys && lightSys->IsActive())
+	{
+		GLint uDiffCoeff = shader->GetUniformLocation("diffuseCoeff");
+		GLint uSpecCoeff = shader->GetUniformLocation("specularCoeff");
+		GLint uSpecExp = shader->GetUniformLocation("specularExp");
+
+		glUniform3fv(uDiffCoeff, 1, &diff[0]);
+		glUniform3fv(uSpecCoeff, 1, &specular[0]);
+		glUniform1f(uSpecExp, specExp);
+	}
 
 	// Get the active camera and respective matrices needed
 	glm::mat4 perspMat(0);
