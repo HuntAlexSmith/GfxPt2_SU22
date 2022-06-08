@@ -153,11 +153,12 @@ void Engine::SetIsRunning(bool running)
 //	Param modelMat:
 //		The object to world transformation matrix
 //*****************************************************************************
-void Engine::Render(DckMesh* mesh, RenderType type, glm::mat4 modelMat)
+void Engine::Render(DckMesh* mesh, RenderType type, glm::mat4 modelMat,
+					glm::vec3 tint, glm::vec3 diff, glm::vec3 spec, float sExp)
 {
 	RenderSystem* renderSys = dynamic_cast<RenderSystem*>(systems_[System::SysType::RenderSys]);
 	if (renderSys)
-		renderSys->Render(mesh, type, modelMat);
+		renderSys->Render(mesh, type, modelMat, tint, diff, spec, sExp);
 }
 
 //*****************************************************************************

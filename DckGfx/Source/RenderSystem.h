@@ -21,14 +21,24 @@ public:
 		int noNorm;
 		glm::mat4 objToWorld;
 		glm::mat4 normalMat;
+		glm::vec3 tint;
+		glm::vec3 diffuse;
+		glm::vec3 specular;
+		float specExp;
 
-		RenderData(GLuint vao, int elementCount, RenderType type, int noNorm, glm::mat4 oTW, glm::mat4 nM) :
+		RenderData(GLuint vao, int elementCount, RenderType type,
+				   int noNorm, glm::mat4 oTW, glm::mat4 nM, glm::vec3 tint,
+				   glm::vec3 diff = glm::vec3(0), glm::vec3 spec = glm::vec3(0), float sExp = 0.0f) :
 			vao(vao),
 			elementCount(elementCount),
 			type(type),
 			noNorm(noNorm),
 			objToWorld(oTW),
-			normalMat(nM)
+			normalMat(nM),
+			tint(tint),
+			diffuse(diff),
+			specular(spec),
+			specExp(sExp)
 		{}
 	};
 
@@ -38,8 +48,11 @@ public:
 	void Update(float dt) override;
 	void Shutdown() override;
 
-	void Render(DckMesh* mesh, RenderType type, glm::mat4 objToWorld);
-	void RenderDebug(DckMesh* mesh, RenderType type, glm::mat4 objToWorld);
+	void Render(DckMesh* mesh, RenderType type, glm::mat4 objToWorld,
+				glm::vec3 tint = glm::vec3(0), glm::vec3 diffuse = glm::vec3(0), glm::vec3 specular = glm::vec3(0), float sExp = 0.0f);
+
+	void RenderDebug(DckMesh* mesh, RenderType type, glm::mat4 objToWorld,
+					 glm::vec3 tint = glm::vec3(0), glm::vec3 diffuse = glm::vec3(0), glm::vec3 specular = glm::vec3(0), float sExp = 0.0f);
 
 	~RenderSystem();
 

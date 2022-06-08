@@ -94,10 +94,11 @@ bool DckEIsRunning()
 //	Param modelMat:
 //		The Object to World matrix for the mesh
 //*****************************************************************************
-void DckERender(DckMesh* mesh, RenderType type, glm::mat4 modelMat)
+void DckERender(DckMesh* mesh, RenderType type, glm::mat4 modelMat,
+				glm::vec3 tint, glm::vec3 diff, glm::vec3 spec, float sExp)
 {
 	if (theEngine)
-		theEngine->Render(mesh, type, modelMat);
+		theEngine->Render(mesh, type, modelMat, tint, diff, spec, sExp);
 }
 
 //*****************************************************************************

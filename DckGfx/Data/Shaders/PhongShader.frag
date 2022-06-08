@@ -8,6 +8,9 @@ in vec3 myColor;
 in vec4 worldPos;
 in vec4 worldNorm;
 
+// Uniform for tinting the object a certain color
+uniform vec3 tint;
+
 // Uniform for ignoring lighting (debug stuff)
 uniform int ignoreNorm;
 
@@ -34,9 +37,9 @@ out vec4 fragColor;
 
 void main() {
     // If we are ignoring the normals, we can just output the color
-    if(ignoreNorm == 1)
+    if(ignoreNorm == 1 || lightCount == 0)
     {
-        fragColor = vec4(myColor, 1);
+        fragColor = vec4(myColor+tint, 1);
     }
 
     // Otherwise, we can do phong lighting calculations

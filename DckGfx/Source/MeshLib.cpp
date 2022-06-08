@@ -11,6 +11,8 @@ static GLint posAttrib = 0;
 static GLint colorAttrib = 1;
 static GLint normalAttrib = 2;
 
+static const glm::vec3 black(0.0f, 0.0f, 0.0f);
+
 // Vertices of the cube
 static const glm::vec4 cubeVertices[] = {
 	GfxMath::Point(1.0f, 1.0f, 1.0f),
@@ -328,25 +330,37 @@ void MeshLib::Initialize()
 	// Create and add a cube mesh to the library
 	Mesh* cube = new Mesh();
 
+	// Create a cube for inverse normals
+	Mesh* invCube = new Mesh();
+
 	// Create the 3D Mesh
 	for (int i = 0; i < 8; ++i)
 	{
-		cube->AddVertex(cubeVertices[i], cubeColors[i]);
+		cube->AddVertex(cubeVertices[i], black);
+		invCube->AddVertex(cubeVertices[i], black);
 	}
 	for (int i = 0; i < 12; ++i)
 	{
 		cube->AddEdge(cubeEdges[i].v1, cubeEdges[i].v2);
 		cube->AddFace(cubeFaces[i].v1, cubeFaces[i].v2, cubeFaces[i].v3);
 	}
+	for (int i = 0; i < 12; ++i)
+		invCube->AddFace(cubeFaces[i].v1, cubeFaces[i].v3, cubeFaces[i].v2);
 
 	// Create a normal mesh from the previous mesh
 	Mesh* normCube = new NormalMesh(cube);
 
+	// Create normal inv mesh
+	Mesh* invNormCube = new NormalMesh(invCube);
+
 	// Add the meshes to the data library
 	LoadMesh("Cube", cube);
 	LoadMesh("NormCube", normCube);
+	LoadMesh("InvNormCube", invNormCube);
 
+	delete invNormCube;
 	delete normCube;
+	delete invCube;
 	delete cube;
 }
 

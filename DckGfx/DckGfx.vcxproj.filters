@@ -40,6 +40,9 @@
     <Filter Include="Source Files\Data Libraries">
       <UniqueIdentifier>{734c7205-cd30-4b04-b96f-ecb6a4461e70}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Objects">
+      <UniqueIdentifier>{6a308719-9633-4d67-a8d6-984a0fc22487}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -104,6 +107,9 @@
     </ClCompile>
     <ClCompile Include="Source\MeshLib.cpp">
       <Filter>Source Files\Data Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RenderObject.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +178,9 @@
     </ClInclude>
     <ClInclude Include="Source\MeshLib.h">
       <Filter>Source Files\Data Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RenderObject.h">
+      <Filter>Source Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

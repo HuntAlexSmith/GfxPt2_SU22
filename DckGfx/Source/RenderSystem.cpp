@@ -13,10 +13,6 @@
 #include "CameraSystem.h"
 #include "Engine.h"
 
-static glm::vec3 diff(1.0f, 1.0f, 0.2f);
-static glm::vec3 specular(0.5f, 0.5f, 0.5f);
-static float specExp = 0.5f;
-
 RenderSystem::RenderSystem() : System(SysType::RenderSys),
 	renderQueue_(),
 	debugQueue_(),
@@ -61,16 +57,6 @@ void RenderSystem::Update(float dt)
 
 	// Get the Lighting System and see if we need to upload diffuse and specular data
 	LightingSystem* lightSys = dynamic_cast<LightingSystem*>(GetParent()->GetSystem(LightingSys));
-	if (lightSys && lightSys->IsActive())
-	{
-		GLint uDiffCoeff = shader->GetUniformLocation("diffuseCoeff");
-		GLint uSpecCoeff = shader->GetUniformLocation("specularCoeff");
-		GLint uSpecExp = shader->GetUniformLocation("specularExp");
-
-		glUniform3fv(uDiffCoeff, 1, &diff[0]);
-		glUniform3fv(uSpecCoeff, 1, &specular[0]);
-		glUniform1f(uSpecExp, specExp);
-	}
 
 	// Get the active camera and respective matrices needed
 	glm::mat4 perspMat(0);
@@ -88,6 +74,7 @@ void RenderSystem::Update(float dt)
 	GLint uPerspMat = shader->GetUniformLocation("perspMat");
 	GLint uNormMat = shader->GetUniformLocation("normMat");
 	GLint uIgNorm = shader->GetUniformLocation("ignoreNorm");
+	GLint uTint = shader->GetUniformLocation("tint");
 
 	// Upload Perspective Matrix and view matrix here
 	glUniformMatrix4fv(uPerspMat, 1, GL_FALSE, &perspMat[0][0]);
@@ -103,7 +90,20 @@ void RenderSystem::Update(float dt)
 		// Upload the necessary uniforms
 		glUniformMatrix4fv(uObjToWorld, 1, GL_FALSE, &currentData.objToWorld[0][0]);
 		glUniformMatrix4fv(uNormMat, 1, GL_FALSE, &currentData.normalMat[0][0]);
+		glUniform3fv(uTint, 1, &currentData.tint[0]);
 		glUniform1i(uIgNorm, currentData.noNorm);
+
+		// If lighting is being used, upload stuff here
+		if (lightSys && lightSys->IsActive())
+		{
+			GLint uDiffCoeff = shader->GetUniformLocation("diffuseCoeff");
+			GLint uSpecCoeff = shader->GetUniformLocation("specularCoeff");
+			GLint uSpecExp = shader->GetUniformLocation("specularExp");
+
+			glUniform3fv(uDiffCoeff, 1, &currentData.diffuse[0]);
+			glUniform3fv(uSpecCoeff, 1, &currentData.specular[0]);
+			glUniform1f(uSpecExp, currentData.specExp);
+		}
 
 		// Render the object using the specified typing
 		glBindVertexArray(currentData.vao);
@@ -135,6 +135,7 @@ void RenderSystem::Update(float dt)
 		// Upload necessary uniforms
 		glUniformMatrix4fv(uObjToWorld, 1, GL_FALSE, &currentData.objToWorld[0][0]);
 		glUniformMatrix4fv(uNormMat, 1, GL_FALSE, &currentData.normalMat[0][0]);
+		glUniform3fv(uTint, 1, &currentData.tint[0]);
 		glUniform1i(uIgNorm, currentData.noNorm);
 
 		// Render object using specified typing
@@ -162,42 +163,44 @@ void RenderSystem::Shutdown()
 
 }
 
-void RenderSystem::Render(DckMesh* mesh, RenderType type, glm::mat4 objToWorld)
+void RenderSystem::Render(DckMesh* mesh, RenderType type, glm::mat4 objToWorld,
+						  glm::vec3 tint, glm::vec3 diffuse, glm::vec3 specular, float sExp)
 {
 	glm::mat4 normMat = GfxMath::NormalMatrix(objToWorld);
 	switch (type)
 	{
 		case RenderType::Points:
-			renderQueue_.push(RenderData(mesh->GetPointVAO(), mesh->GetPointCount(), type, 1, objToWorld, normMat));
+			renderQueue_.push(RenderData(mesh->GetPointVAO(), mesh->GetPointCount(), type, 1, objToWorld, normMat, tint, diffuse, specular, sExp));
 			break;
 		case RenderType::Lines:
-			renderQueue_.push(RenderData(mesh->GetEdgeVAO(), mesh->GetEdgeCount(), type, 1, objToWorld, normMat));
+			renderQueue_.push(RenderData(mesh->GetEdgeVAO(), mesh->GetEdgeCount(), type, 1, objToWorld, normMat, tint, diffuse, specular, sExp));
 			break;
 		case RenderType::Triangles:
 			if (mesh->HasNormals())
-				renderQueue_.push(RenderData(mesh->GetFaceVAO(), mesh->GetFaceCount(), type, 0, objToWorld, normMat));
+				renderQueue_.push(RenderData(mesh->GetFaceVAO(), mesh->GetFaceCount(), type, 0, objToWorld, normMat, tint, diffuse, specular, sExp));
 			else
-				renderQueue_.push(RenderData(mesh->GetFaceVAO(), mesh->GetFaceCount(), type, 1, objToWorld, normMat));
+				renderQueue_.push(RenderData(mesh->GetFaceVAO(), mesh->GetFaceCount(), type, 1, objToWorld, normMat, tint, diffuse, specular, sExp));
 			break;
 	}
 }
 
-void RenderSystem::RenderDebug(DckMesh* mesh, RenderType type, glm::mat4 objToWorld)
+void RenderSystem::RenderDebug(DckMesh* mesh, RenderType type, glm::mat4 objToWorld,
+							   glm::vec3 tint, glm::vec3 diffuse, glm::vec3 specular, float sExp)
 {
 	glm::mat4 normMat = GfxMath::NormalMatrix(objToWorld);
 	switch (type)
 	{
 	case RenderType::Points:
-		debugQueue_.push(RenderData(mesh->GetPointVAO(), mesh->GetPointCount(), type, 1, objToWorld, normMat));
+		debugQueue_.push(RenderData(mesh->GetPointVAO(), mesh->GetPointCount(), type, 1, objToWorld, normMat, tint, diffuse, specular, sExp));
 		break;
 	case RenderType::Lines:
-		debugQueue_.push(RenderData(mesh->GetEdgeVAO(), mesh->GetEdgeCount(), type, 1, objToWorld, normMat));
+		debugQueue_.push(RenderData(mesh->GetEdgeVAO(), mesh->GetEdgeCount(), type, 1, objToWorld, normMat, tint, diffuse, specular, sExp));
 		break;
 	case RenderType::Triangles:
 		if (mesh->HasNormals())
-			debugQueue_.push(RenderData(mesh->GetFaceVAO(), mesh->GetFaceCount(), type, 0, objToWorld, normMat));
+			debugQueue_.push(RenderData(mesh->GetFaceVAO(), mesh->GetFaceCount(), type, 0, objToWorld, normMat, tint, diffuse, specular, sExp));
 		else
-			debugQueue_.push(RenderData(mesh->GetFaceVAO(), mesh->GetFaceCount(), type, 1, objToWorld, normMat));
+			debugQueue_.push(RenderData(mesh->GetFaceVAO(), mesh->GetFaceCount(), type, 1, objToWorld, normMat, tint, diffuse, specular, sExp));
 		break;
 	}
 }

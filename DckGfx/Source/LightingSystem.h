@@ -10,6 +10,7 @@
 #include "System.h"
 #include "GfxMath.h"
 #include "glad/glad.h"
+#include "RenderObject.h"
 
 static const int maxLights = 10;
 
@@ -28,6 +29,9 @@ public:
 
 private:
 
+	// Render object for Rendering a cube at the lights
+	RenderObject* cubeLight_;
+	
 	// Shader for lighting
 	Shader* phongShader_;
 

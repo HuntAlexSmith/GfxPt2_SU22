@@ -8,6 +8,7 @@
 #include "Scene1.h"
 #include "DckGfxEngine.h"
 #include "GfxMath.h"
+#include "RenderObject.h"
 
 // Rotation stuff
 static float rotation = 0.0f;
@@ -16,72 +17,23 @@ glm::vec4 diagAxis = GfxMath::Vector(1, 1, 1);
 // Color
 static glm::vec3 gray(0.2f, 0.2f, 0.2f);
 
-// Vertices of the cube
-static const glm::vec4 cubeVertices[] = {
-	GfxMath::Point(1.0f, 1.0f, 1.0f),
-	GfxMath::Point(1.0f, 1.0f, -1.0f),
-	GfxMath::Point(1.0f, -1.0f, 1.0f),
-	GfxMath::Point(1.0f, -1.0f, -1.0f),
-	GfxMath::Point(-1.0f, 1.0f, 1.0f),
-	GfxMath::Point(-1.0f, 1.0f, -1.0f),
-	GfxMath::Point(-1.0f, -1.0f, 1.0f),
-	GfxMath::Point(-1.0f, -1.0f, -1.0f)
-};
-
-// Colors of vertices of cube
-static const glm::vec3 cubeColors[] = {
-	glm::vec3(1.0f, 0.0f, 0.0f),
-	glm::vec3(0.0f, 1.0f, 0.0f),
-	glm::vec3(0.0f, 0.0f, 1.0f),
-	glm::vec3(1.0f, 1.0f, 0.0f),
-	glm::vec3(1.0f, 1.0f, 1.0f),
-	glm::vec3(1.0f, 0.0f, 1.0f),
-	glm::vec3(0.0f, 1.0f, 1.0f),
-	glm::vec3(1.0f, 1.0f, 1.0f)
-};
-
-// Edges of the cube
-static const Mesh::Edge cubeEdges[] = {
-	Mesh::Edge(0, 1),
-	Mesh::Edge(1, 3),
-	Mesh::Edge(2, 3),
-	Mesh::Edge(0, 2),
-	Mesh::Edge(0, 4),
-	Mesh::Edge(2, 6),
-	Mesh::Edge(3, 7),
-	Mesh::Edge(1, 5),
-	Mesh::Edge(4, 5),
-	Mesh::Edge(5, 7),
-	Mesh::Edge(6, 7),
-	Mesh::Edge(4, 6)
-};
-
-// Faces of the cube
-static const Mesh::Face cubeFaces[] = {
-	Mesh::Face(0, 3, 1),
-	Mesh::Face(0, 2, 3),
-	Mesh::Face(0, 5, 4),
-	Mesh::Face(0, 1, 5),
-	Mesh::Face(3, 7, 5),
-	Mesh::Face(1, 3, 5),
-	Mesh::Face(2, 6, 7),
-	Mesh::Face(2, 7, 3),
-	Mesh::Face(0, 6, 2),
-	Mesh::Face(0, 4, 6),
-	Mesh::Face(4, 7, 6),
-	Mesh::Face(4, 5, 7)
-};
-
-static Mesh* my3DMesh;
-static Mesh* myNormMesh;
-
-static DckMesh* render3DMesh;
-static DckMesh* renderNormMesh;
+static RenderObject* lazyCube;
+static RenderObject* phongCube;
 
 void Scene1Load()
 {
-	render3DMesh = MeshLibraryGet("Cube");
-	renderNormMesh = MeshLibraryGet("NormCube");
+	lazyCube = new RenderObject();
+	lazyCube->SetMesh(MeshLibraryGet("Cube"));
+	lazyCube->SetRotation(GfxMath::Vector(1, 1, 1), 0.0f);
+	lazyCube->SetPosition(GfxMath::Point(3, 0, 0));
+	lazyCube->SetTint(glm::vec3(0.0f, 1.0f, 1.0f));
+
+	phongCube = new RenderObject();
+	phongCube->SetMesh(MeshLibraryGet("NormCube"));
+	phongCube->SetRotation(GfxMath::Vector(1, 1, 1), 0.0f);
+	phongCube->SetPosition(GfxMath::Point(-3, 0, 0));
+	phongCube->SetDiffuse(glm::vec3(1.0f, 0.0f, 1.0f));
+	phongCube->SetSpecular(glm::vec3(1.0f, 1.0f, 1.0f), 1.0f);
 }
 
 void Scene1Init()
@@ -99,20 +51,25 @@ void Scene1Update(float dt)
 	else if (DckEKeyIsTriggered(SDLK_F2))
 		DckESetNextScene(SceneID::Scene2);
 
-	// Calculate a new rotation every frame
+	// Get the current rotation data of the cubes and update their rotations accordingly
+	float rotation;
+	glm::vec4 rotVec;
+	lazyCube->GetRotation(&rotVec, &rotation);
 	rotation += 45.0f * dt;
 	if (rotation > 360.0f)
 		rotation = 0.0f;
+	lazyCube->SetRotation(rotVec, rotation);
 
-	// Calculate a new model matrix for the mesh and render it
-	glm::vec4 move = GfxMath::Point(3, 0, 0);
-	glm::mat4 fullTrans = GfxMath::Translate(move) * GfxMath::Rotate3D(diagAxis, rotation);
-	DckERender(render3DMesh, RenderType::Triangles, fullTrans);
+	phongCube->GetRotation(&rotVec, &rotation);
+	rotation += 45.0f * dt;
+	if (rotation > 360.0f)
+		rotation = 0.0f;
+	phongCube->SetRotation(rotVec, rotation);
 
-	// Calculate a new model matrix for the mesh and render it
-	glm::vec4 otherMove = GfxMath::Point(-3, 0, 0);
-	glm::mat4 otherTrans = GfxMath::Translate(otherMove) * GfxMath::Rotate3D(diagAxis, -rotation);
-	DckERender(renderNormMesh, RenderType::Triangles, otherTrans);
+	// Draw the objects
+	lazyCube->Draw(RenderType::Lines);
+	phongCube->Draw(RenderType::Triangles);
+
 }
 
 void Scene1Shutdown()

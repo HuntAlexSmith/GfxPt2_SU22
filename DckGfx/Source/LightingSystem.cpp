@@ -10,9 +10,10 @@
 #include "CameraSystem.h"
 #include "LightingSystem.h"
 #include "GraphicsSystem.h"
+#include "RenderSystem.h"
 #include "ShaderLib.h"
 
-LightingSystem::LightingSystem() : System(SysType::LightingSys), phongShader_(nullptr), lightPos_(), lightColor_(), ambientColor_(0.6f), lightCount_(0)
+LightingSystem::LightingSystem() : System(SysType::LightingSys), cubeLight_(nullptr), phongShader_(nullptr), lightPos_(), lightColor_(), ambientColor_(0.25f), lightCount_(0)
 {
 }
 
@@ -20,7 +21,11 @@ void LightingSystem::Initialize()
 {
 	lightCount_++;
 	lightPos_[0] = GfxMath::Point(-3, 5, -10);
-	lightColor_[0] = glm::vec3(1, 1, 1);
+	lightColor_[0] = glm::vec3(0, 1, 1);
+
+	lightCount_++;
+	lightPos_[1] = GfxMath::Point(-3, 5, 10);
+	lightColor_[1] = glm::vec3(1, 1, 0);
 }
 
 void LightingSystem::Update(float dt)
@@ -28,6 +33,14 @@ void LightingSystem::Update(float dt)
 	// Make sure to get what shader lighting will be using
 	if (!phongShader_)
 		phongShader_ = ShaderLibraryGet("Phong Shader");
+
+	// If there isn't a cube for the lights, create it
+	if (!cubeLight_)
+	{
+		cubeLight_ = new RenderObject();
+		cubeLight_->SetMesh(MeshLibraryGet("Cube"));
+		cubeLight_->SetScale(glm::vec3(0.25f));
+	}
 
 	glm::vec4 camEyePoint(0);
 
@@ -62,11 +75,23 @@ void LightingSystem::Update(float dt)
 			glUniform3fv(uLightColor, lightCount_, &(lightColor_[0][0]));
 		}
 	}
+
+	RenderSystem* renderSys = dynamic_cast<RenderSystem*>(GetParent()->GetSystem(SysType::RenderSys));
+	if (renderSys)
+	{
+		for (int i = 0; i < lightCount_; ++i)
+		{
+			cubeLight_->SetPosition(lightPos_[i]);
+			cubeLight_->SetTint(lightColor_[i]);
+			cubeLight_->Draw(RenderType::Triangles);
+		}
+	}
 }
 
 void LightingSystem::Shutdown()
 {
-
+	if (cubeLight_)
+		delete cubeLight_;
 }
 
 bool LightingSystem::IsActive()

@@ -30,7 +30,9 @@ public:
 	bool IsRunning();
 	void SetIsRunning(bool running);
 
-	void Render(DckMesh* mesh, RenderType type, glm::mat4 modelMat);
+	void Render(DckMesh* mesh, RenderType type, glm::mat4 modelMat,
+			    glm::vec3 tint = glm::vec3(0), glm::vec3 diff = glm::vec3(0), glm::vec3 spec = glm::vec3(0), float sExp = 0.0f);
+
 	void DebugRender(DckMesh* mesh, RenderType type, glm::mat4 modelMat);
 
 	~Engine();
