@@ -6,6 +6,7 @@
 //*****************************************************************************
 
 #include "MeshLib.h"
+#include "FileReader.h"
 
 static GLint posAttrib = 0;
 static GLint colorAttrib = 1;
@@ -328,22 +329,14 @@ void MeshLib::Initialize()
 	delete orientationMesh_;
 
 	// Create and add a cube mesh to the library
-	Mesh* cube = new Mesh();
+	Mesh* cube = ReadMeshFile("Data/Shapes/Cube.txt");
 
 	// Create a cube for inverse normals
-	Mesh* invCube = new Mesh();
+	Mesh* invCube = new Mesh("InvCube");
 
 	// Create the 3D Mesh
 	for (int i = 0; i < 8; ++i)
-	{
-		cube->AddVertex(cubeVertices[i], black);
-		invCube->AddVertex(cubeVertices[i], black);
-	}
-	for (int i = 0; i < 12; ++i)
-	{
-		cube->AddEdge(cubeEdges[i].v1, cubeEdges[i].v2);
-		cube->AddFace(cubeFaces[i].v1, cubeFaces[i].v2, cubeFaces[i].v3);
-	}
+		invCube->AddVertex(cubeVertices[i], black);	
 	for (int i = 0; i < 12; ++i)
 		invCube->AddFace(cubeFaces[i].v1, cubeFaces[i].v3, cubeFaces[i].v2);
 
@@ -354,9 +347,11 @@ void MeshLib::Initialize()
 	Mesh* invNormCube = new NormalMesh(invCube);
 
 	// Add the meshes to the data library
-	LoadMesh("Cube", cube);
-	LoadMesh("NormCube", normCube);
-	LoadMesh("InvNormCube", invNormCube);
+	LoadMesh(cube->GetName(), cube);
+	LoadMesh(normCube->GetName(), normCube);
+	LoadMesh(invNormCube->GetName(), invNormCube);
+
+	WriteMeshFile(cube);
 
 	delete invNormCube;
 	delete normCube;

@@ -8,5 +8,9 @@
 //*****************************************************************************
 
 #include <string>
+#include "Mesh.h"
 
 std::string ReadShaderFile(const char* filepath);
+
+void WriteMeshFile(Mesh* mesh);
+Mesh* ReadMeshFile(const char* filepath);

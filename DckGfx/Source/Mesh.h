@@ -8,6 +8,7 @@
 
 #include "Shader.h"
 #include "GfxMath.h"
+#include <string>
 #include <vector>
 
 //*****************************************************************************
@@ -61,7 +62,7 @@ public:
 		Face(unsigned int v1, unsigned int v2, unsigned int v3) : v1(v1), v2(v2), v3(v3) {}
 	};
 
-	Mesh();
+	Mesh(std::string name = "Mesh");
 
 	void AddVertex(glm::vec4 position, glm::vec3 color);
 	void AddPoint(unsigned int v);
@@ -70,6 +71,8 @@ public:
 
 	std::pair<glm::vec4, glm::vec3> GetVertex(unsigned int v);
 	Face GetFace(unsigned int i);
+
+	std::string GetName();
 
 	int GetVertexCount();
 	int GetPointCount();
@@ -94,6 +97,8 @@ public:
 	virtual ~Mesh();
 
 private:
+
+	std::string name_;
 
 	GLint posAttrib_;
 	GLint colorAttrib_;

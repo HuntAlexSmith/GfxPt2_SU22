@@ -16,7 +16,9 @@ static GLint normalAttribLocation = 2;
 //  Description:
 //		Constructor for a mesh class, which generates buffers for meshes
 //*************************************************************************
-Mesh::Mesh() : posAttrib_(posAttribLocation),
+Mesh::Mesh(std::string name) : 
+	name_(name),
+	posAttrib_(posAttribLocation),
 	colorAttrib_(colorAttribLocation),
 	vertices_(),
 	colors_(),
@@ -122,6 +124,11 @@ void Mesh::AddFace(unsigned int v1, unsigned int v2, unsigned int v3)
 	// glNamedBufferData(buffers_[edgeEBO], GetFaceCount() * sizeof(Face), &(faces_[0]), GL_STATIC_DRAW);
 }
 
+std::string Mesh::GetName()
+{
+	return name_;
+}
+
 //*************************************************************************
 //  Description:
 //		Gets the vertex data of the vertex at the given index
@@ -173,7 +180,9 @@ int Mesh::GetPointCount()
 //*************************************************************************
 glm::vec4* Mesh::GetVertices()
 {
-	return &(vertices_[0]);
+	if(vertices_.size() > 0)
+		return &(vertices_[0]);
+	return nullptr;
 }
 
 //*************************************************************************
@@ -185,7 +194,9 @@ glm::vec4* Mesh::GetVertices()
 //*************************************************************************
 glm::vec3* Mesh::GetColors()
 {
-	return &(colors_[0]);
+	if(colors_.size() > 0)
+		return &(colors_[0]);
+	return nullptr;
 }
 
 //*************************************************************************
@@ -197,7 +208,9 @@ glm::vec3* Mesh::GetColors()
 //*************************************************************************
 unsigned int* Mesh::GetPoints()
 {
-	return &(points_[0]);
+	if(points_.size() > 0)
+		return &(points_[0]);
+	return nullptr;
 }
 
 //*************************************************************************
@@ -209,7 +222,9 @@ unsigned int* Mesh::GetPoints()
 //*************************************************************************
 Mesh::Edge* Mesh::GetEdges()
 {
-	return &(edges_[0]);
+	if(edges_.size() > 0)
+		return &(edges_[0]);
+	return nullptr;
 }
 
 //*************************************************************************
@@ -221,7 +236,9 @@ Mesh::Edge* Mesh::GetEdges()
 //*************************************************************************
 Mesh::Face* Mesh::GetFaces()
 {
-	return &(faces_[0]);
+	if(faces_.size() > 0)
+		return &(faces_[0]);
+	return nullptr;
 }
 
 //*************************************************************************
@@ -432,7 +449,7 @@ Mesh::~Mesh()
 //		Constructor for a Normal Mesh, which generates a normal mesh from
 //		a provided mesh
 //*************************************************************************
-NormalMesh::NormalMesh(Mesh* mesh) : Mesh(), normalAttrib_(normalAttribLocation), normals_(), normalBuffer_(0), normalFaceVao_(0)
+NormalMesh::NormalMesh(Mesh* mesh) : Mesh("Norm" + mesh->GetName()), normalAttrib_(normalAttribLocation), normals_(), normalBuffer_(0), normalFaceVao_(0)
 {
 	glGenBuffers(1, &normalBuffer_);
 	int faceCount = mesh->GetFaceCount();
