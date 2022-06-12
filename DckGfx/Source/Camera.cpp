@@ -156,6 +156,12 @@ void Camera::Roll(float angle)
 	SetDirtyFlags(true);
 }
 
+void Camera::SetAspect(float aspect)
+{
+	viewportHeight_ = viewportWidth_ / aspect;
+	SetDirtyFlags(true);
+}
+
 //*****************************************************************************
 //  Description:
 //		Get the current fov of the camera

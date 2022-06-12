@@ -38,3 +38,5 @@ void DckESetBackColor(glm::vec3 newColor);
 glm::vec3 DckEGetBackColor();
 
 void DckESetNextScene(SceneID nextScene);
+
+void DckEAddLight(glm::vec4 pos, glm::vec3 color);

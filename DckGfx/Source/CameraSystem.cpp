@@ -129,6 +129,15 @@ void CameraSystem::Shutdown()
 	cameras_.clear();
 }
 
+void CameraSystem::UpdateAspects(float aspect)
+{
+	for (auto cam : cameras_)
+	{
+		if (cam.second)
+			cam.second->SetAspect(aspect);
+	}
+}
+
 Camera* CameraSystem::GetActiveCamera()
 {
 	return activeCam_;

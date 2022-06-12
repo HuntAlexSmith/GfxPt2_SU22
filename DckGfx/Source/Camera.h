@@ -25,6 +25,8 @@ public:
 	void Pitch(float angle);
 	void Roll(float angle);
 
+	void SetAspect(float aspect);
+
 	float GetFOV();
 
 	void Zoom(float zoom);

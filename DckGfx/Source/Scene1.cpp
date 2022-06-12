@@ -34,11 +34,13 @@ void Scene1Load()
 	phongCube->SetPosition(GfxMath::Point(-3, 0, 0));
 	phongCube->SetDiffuse(glm::vec3(1.0f, 0.0f, 1.0f));
 	phongCube->SetSpecular(glm::vec3(1.0f, 1.0f, 1.0f), 1.0f);
+
+	DckEAddLight(GfxMath::Point(-3, 5, 10), glm::vec3(1.0f, 1.0f, 0.0f));
+	DckEAddLight(GfxMath::Point(-3, 5, -10), glm::vec3(0.0f, 1.0f, 1.0f));
 }
 
 void Scene1Init()
 {
-	DckESetBackColor(gray);
 	rotation = 0.0f;
 }
 

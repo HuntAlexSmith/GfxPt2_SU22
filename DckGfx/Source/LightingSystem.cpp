@@ -19,13 +19,9 @@ LightingSystem::LightingSystem() : System(SysType::LightingSys), cubeLight_(null
 
 void LightingSystem::Initialize()
 {
-	lightCount_++;
-	lightPos_[0] = GfxMath::Point(-3, 5, -10);
-	lightColor_[0] = glm::vec3(0, 1, 1);
-
-	lightCount_++;
-	lightPos_[1] = GfxMath::Point(-3, 5, 10);
-	lightColor_[1] = glm::vec3(1, 1, 0);
+	GraphicsSystem* graphics = dynamic_cast<GraphicsSystem*>(GetParent()->GetSystem(GraphicsSys));
+	if (graphics)
+		graphics->SetBackColor(glm::vec3(0.25f, 0.25f, 0.25f));
 }
 
 void LightingSystem::Update(float dt)
@@ -92,6 +88,23 @@ void LightingSystem::Shutdown()
 {
 	if (cubeLight_)
 		delete cubeLight_;
+}
+
+void LightingSystem::AddLight(glm::vec4 pos, glm::vec3 color)
+{
+	if (lightCount_ < maxLights)
+	{
+		lightPos_[lightCount_] = pos;
+		lightColor_[lightCount_] = color;
+		lightCount_++;
+	}
+}
+
+void LightingSystem::ClearLights()
+{
+	memset(lightPos_, 0, maxLights);
+	memset(lightColor_, 0, maxLights);
+	lightCount_ = 0;
 }
 
 bool LightingSystem::IsActive()

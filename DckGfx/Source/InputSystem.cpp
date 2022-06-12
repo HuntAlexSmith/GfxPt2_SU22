@@ -6,6 +6,7 @@
 //*****************************************************************************
 
 #include "InputSystem.h"
+#include "WindowSystem.h"
 #include "Engine.h"
 
 typedef std::pair<SDL_Keycode, InputSystem::KeyState> Key;
@@ -126,6 +127,14 @@ void InputSystem::Update(float dt)
 					leftMouse_ = KeyState::Released;
 				if (inputEvent_.button.button == SDL_BUTTON_RIGHT)
 					rightMouse_ = KeyState::Released;
+				break;
+			case SDL_WINDOWEVENT:
+				if (inputEvent_.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+				{
+					WindowSystem* windowSys = dynamic_cast<WindowSystem*>(GetParent()->GetSystem(WindowSys));
+					if (windowSys)
+						windowSys->UpdateWindowSize(inputEvent_.window.data1, inputEvent_.window.data2);
+				}
 				break;
 		}
 

@@ -19,6 +19,8 @@ public:
 	void Update(float dt) override;
 	void Shutdown() override;
 
+	void UpdateWindowSize(int newW, int newH);
+
 	void GetWindowSize(int* w, int* h);
 
 	~WindowSystem();
@@ -27,6 +29,7 @@ private:
 
 	int width_;
 	int height_;
+	float aspect_;
 	std::string name_;
 
 	SDL_Window* window_;

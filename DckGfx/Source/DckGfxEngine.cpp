@@ -8,6 +8,7 @@
 
 #include "DckGfxEngine.h"
 #include "InputSystem.h"
+#include "LightingSystem.h"
 #include "GraphicsSystem.h"
 #include "SceneSystem.h"
 #include "ShaderLib.h"
@@ -287,4 +288,11 @@ void DckESetNextScene(SceneID nextScene)
 	SceneSystem* sceneSys = dynamic_cast<SceneSystem*>(theEngine->GetSystem(System::SysType::SceneSys));
 	if (sceneSys)
 		sceneSys->SetNextScene(nextScene);
+}
+
+void DckEAddLight(glm::vec4 pos, glm::vec3 color)
+{
+	LightingSystem* lightSys = dynamic_cast<LightingSystem*>(theEngine->GetSystem(System::SysType::LightingSys));
+	if (lightSys)
+		lightSys->AddLight(pos, color);
 }

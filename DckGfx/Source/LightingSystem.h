@@ -23,6 +23,10 @@ public:
 	void Update(float dt) override;
 	void Shutdown() override;
 
+	void AddLight(glm::vec4 pos, glm::vec3 color);
+
+	void ClearLights();
+
 	bool IsActive();
 
 	~LightingSystem();

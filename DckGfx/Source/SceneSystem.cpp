@@ -7,6 +7,8 @@
 //*****************************************************************************
 
 #include "SceneSystem.h"
+#include "LightingSystem.h"
+#include "Engine.h"
 #include "Scene1.h"
 #include "Scene2.h"
 
@@ -31,6 +33,11 @@ void SceneSystem::Update(float dt)
 	// If we are switching scenes, perform the logic for doing so
 	if (currScene_ != nextScene_)
 	{
+		// Get lighting system and clear the lights
+		LightingSystem* lightSys = dynamic_cast<LightingSystem*>(GetParent()->GetSystem(LightingSys));
+		if (lightSys)
+			lightSys->ClearLights();
+
 		// If valid, shutdown
 		if (SceneIsValid(currScene_))
 			scenes_[currScene_].shutdown();

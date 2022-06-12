@@ -18,7 +18,7 @@ void Scene2Load()
 
 void Scene2Init()
 {
-	DckESetBackColor(cyan);
+	
 }
 
 void Scene2Update(float dt)
