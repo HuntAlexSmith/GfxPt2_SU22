@@ -68,10 +68,36 @@ void RenderObject::SetSpecular(glm::vec3 coeff, float exp)
 	isDirty_ = true;
 }
 
+glm::vec4 RenderObject::GetPosition()
+{
+	return pos_;
+}
+
+glm::vec3 RenderObject::GetScale()
+{
+	return scale_;
+}
+
 void RenderObject::GetRotation(glm::vec4* vec, float* angle)
 {
 	*vec = rotVec_;
 	*angle = rotAngle_;
+}
+
+glm::vec3 RenderObject::GetTint()
+{
+	return tint_;
+}
+
+glm::vec3 RenderObject::GetDiffuse()
+{
+	return diffuse_;
+}
+
+void RenderObject::GetSpecular(glm::vec3* coeff, float* exp)
+{
+	*coeff = specular_;
+	*exp = specularExp_;
 }
 
 void RenderObject::Draw(RenderType type)

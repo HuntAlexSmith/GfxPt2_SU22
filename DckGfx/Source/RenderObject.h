@@ -22,7 +22,12 @@ public:
 	void SetDiffuse(glm::vec3 coeff);
 	void SetSpecular(glm::vec3 coeff, float exp);
 
+	glm::vec4 GetPosition();
+	glm::vec3 GetScale();
 	void GetRotation(glm::vec4* vec, float* angle);
+	glm::vec3 GetTint();
+	glm::vec3 GetDiffuse();
+	void GetSpecular(glm::vec3* coeff, float* exp);
 
 	void Draw(RenderType type);
 

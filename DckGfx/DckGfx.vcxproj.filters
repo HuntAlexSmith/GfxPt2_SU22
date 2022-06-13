@@ -46,6 +46,9 @@
     <Filter Include="Source Files\imgui">
       <UniqueIdentifier>{9a9b560f-7f9d-4e82-9bb4-a124a13ad366}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Managers">
+      <UniqueIdentifier>{0983ab15-3cbd-40b0-a325-5782d5aabf74}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">

@@ -11,6 +11,7 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
+#include <iostream>
 
 ImGUISystem::ImGUISystem() : System(ImGUISys)
 {
@@ -24,9 +25,6 @@ void ImGUISystem::Initialize()
 
 	// On initialization, create an ImGUI context
 	ImGui::CreateContext();
-
-	ImGuiIO& io = ImGui::GetIO();
-	(void)io;
 
 	// Get the window system for window handle and opengl context
 	WindowSystem* windowSys = dynamic_cast<WindowSystem*>(GetParent()->GetSystem(WindowSys));
@@ -52,9 +50,17 @@ void ImGUISystem::Update(float dt)
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
+	// Calculate current frame rate
+	unsigned int frameRate = static_cast<unsigned int>(1.0f / dt);
+
+	ImVec2 windowPos(0, 0);
+	ImVec2 windowSize(200, 50);
+	ImGui::SetNextWindowPos(windowPos);
+	ImGui::SetNextWindowSize(windowSize);
+
 	// Print something
-	ImGui::Begin("My First Window :)");
-	ImGui::Text("Hello World!");
+	ImGui::Begin("Debug Info");
+	ImGui::Text("Frame Rate: %u", frameRate);
 	ImGui::End();
 
 	// Now to get it rendered
