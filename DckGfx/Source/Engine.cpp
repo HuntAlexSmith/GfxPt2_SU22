@@ -14,6 +14,7 @@
 #include "GraphicsSystem.h"
 #include "LightingSystem.h"
 #include "RenderSystem.h"
+#include "ImGUISystem.h"
 
 //*****************************************************************************
 //  Description:
@@ -30,6 +31,7 @@ Engine::Engine() : systems_{nullptr}, isRunning_(false)
 	System* graphicSys = new GraphicsSystem();
 	System* lightSys = new LightingSystem();
 	System* renderSys = new RenderSystem();
+	System* imGuiSys = new ImGUISystem();
 
 	// Add the systems to the engine
 	AddSystem(windowSys);
@@ -39,6 +41,7 @@ Engine::Engine() : systems_{nullptr}, isRunning_(false)
 	AddSystem(graphicSys);
 	AddSystem(lightSys);
 	AddSystem(renderSys);
+	AddSystem(imGuiSys);
 }
 
 //*****************************************************************************

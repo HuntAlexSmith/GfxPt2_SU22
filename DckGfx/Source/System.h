@@ -20,6 +20,7 @@ public:
 		GraphicsSys,
 		LightingSys,
 		RenderSys,
+		ImGUISys,
 		SceneSys,
 		SystemCount
 	};

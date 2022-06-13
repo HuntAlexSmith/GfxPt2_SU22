@@ -43,6 +43,9 @@
     <Filter Include="Source Files\Objects">
       <UniqueIdentifier>{6a308719-9633-4d67-a8d6-984a0fc22487}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\imgui">
+      <UniqueIdentifier>{9a9b560f-7f9d-4e82-9bb4-a124a13ad366}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -110,6 +113,30 @@
     </ClCompile>
     <ClCompile Include="Source\RenderObject.cpp">
       <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\imgui\imgui.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\imgui\imgui_demo.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\imgui\imgui_draw.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\imgui\imgui_impl_opengl3.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\imgui\imgui_impl_sdl.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\imgui\imgui_tables.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\imgui\imgui_widgets.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ImGUISystem.cpp">
+      <Filter>Source Files\Systems</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +208,9 @@
     </ClInclude>
     <ClInclude Include="Source\RenderObject.h">
       <Filter>Source Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ImGUISystem.h">
+      <Filter>Source Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

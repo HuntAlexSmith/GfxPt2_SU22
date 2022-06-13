@@ -159,6 +159,14 @@
     <ClCompile Include="Source\GfxMath.cpp" />
     <ClCompile Include="Source\glad.c" />
     <ClCompile Include="Source\GraphicsSystem.cpp" />
+    <ClCompile Include="Source\ImGUISystem.cpp" />
+    <ClCompile Include="Source\imgui\imgui.cpp" />
+    <ClCompile Include="Source\imgui\imgui_demo.cpp" />
+    <ClCompile Include="Source\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Source\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Source\imgui\imgui_impl_sdl.cpp" />
+    <ClCompile Include="Source\imgui\imgui_tables.cpp" />
+    <ClCompile Include="Source\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Source\InputSystem.cpp" />
     <ClCompile Include="Source\LightingSystem.cpp" />
     <ClCompile Include="Source\Main.cpp" />
@@ -182,6 +190,7 @@
     <ClInclude Include="Source\FileReader.h" />
     <ClInclude Include="Source\GfxMath.h" />
     <ClInclude Include="Source\GraphicsSystem.h" />
+    <ClInclude Include="Source\ImGUISystem.h" />
     <ClInclude Include="Source\InputSystem.h" />
     <ClInclude Include="Source\Library.h" />
     <ClInclude Include="Source\LightingSystem.h" />

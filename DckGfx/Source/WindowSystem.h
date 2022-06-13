@@ -19,6 +19,9 @@ public:
 	void Update(float dt) override;
 	void Shutdown() override;
 
+	SDL_Window* GetWindowHandle();
+	SDL_GLContext GetGLContext();
+
 	void UpdateWindowSize(int newW, int newH);
 
 	void GetWindowSize(int* w, int* h);

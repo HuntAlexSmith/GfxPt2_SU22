@@ -73,6 +73,16 @@ void WindowSystem::Shutdown()
 	SDL_Quit();
 }
 
+SDL_Window* WindowSystem::GetWindowHandle()
+{
+	return window_;
+}
+
+SDL_GLContext WindowSystem::GetGLContext()
+{
+	return glContext_;
+}
+
 void WindowSystem::UpdateWindowSize(int newW, int newH)
 {
 	width_ = newW;

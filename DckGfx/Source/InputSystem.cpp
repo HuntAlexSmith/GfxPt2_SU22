@@ -7,6 +7,7 @@
 
 #include "InputSystem.h"
 #include "WindowSystem.h"
+#include "ImGUISystem.h"
 #include "Engine.h"
 
 typedef std::pair<SDL_Keycode, InputSystem::KeyState> Key;
@@ -104,9 +105,16 @@ void InputSystem::Update(float dt)
 			break;
 	}
 
+	// Get the ImGUI system and process inputs from SDL
+	ImGUISystem* imGuiSys = dynamic_cast<ImGUISystem*>(GetParent()->GetSystem(ImGUISys));
+
 	// Loop for processing all input events
 	while (SDL_PollEvent(&inputEvent_))
 	{
+		// Process events for ImGUI
+		if (imGuiSys)
+			imGuiSys->ProcessEvents(&inputEvent_);
+
 		// Check for the quit event
 		if (inputEvent_.type == SDL_QUIT)
 		{
