@@ -18,6 +18,7 @@ public:
 		InputSys,
 		CameraSys,
 		GraphicsSys,
+		ObjectManagerSys,
 		LightingSys,
 		RenderSys,
 		ImGUISys,

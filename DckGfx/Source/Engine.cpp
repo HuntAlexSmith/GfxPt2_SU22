@@ -12,6 +12,7 @@
 #include "CameraSystem.h"
 #include "SceneSystem.h"
 #include "GraphicsSystem.h"
+#include "ObjectManagerSystem.h"
 #include "LightingSystem.h"
 #include "RenderSystem.h"
 #include "ImGUISystem.h"
@@ -29,6 +30,7 @@ Engine::Engine() : systems_{nullptr}, isRunning_(false)
 	System* camSys = new CameraSystem();
 	System* sceneSys = new SceneSystem();
 	System* graphicSys = new GraphicsSystem();
+	System* objManSys = new ObjectManagerSystem();
 	System* lightSys = new LightingSystem();
 	System* renderSys = new RenderSystem();
 	System* imGuiSys = new ImGUISystem();
@@ -39,6 +41,7 @@ Engine::Engine() : systems_{nullptr}, isRunning_(false)
 	AddSystem(camSys);
 	AddSystem(sceneSys);
 	AddSystem(graphicSys);
+	AddSystem(objManSys);
 	AddSystem(lightSys);
 	AddSystem(renderSys);
 	AddSystem(imGuiSys);

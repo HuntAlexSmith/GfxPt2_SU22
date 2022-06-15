@@ -9,8 +9,10 @@
 #include "RenderObject.h"
 #include "DckGfxEngine.h"
 
-RenderObject::RenderObject() :
+RenderObject::RenderObject(std::string name) :
+	name_(name),
 	mesh_(nullptr),
+	rendType_(RenderType::Triangles),
 	pos_(0),
 	scale_(1),
 	rotVec_(GfxMath::Vector(0, 1, 0)),
@@ -20,7 +22,8 @@ RenderObject::RenderObject() :
 	specular_(0),
 	specularExp_(0.0f),
 	isDirty_(true),
-	modelMat_(1)
+	modelMat_(1),
+	isDestroyed_(false)
 {
 }
 
@@ -28,6 +31,11 @@ void RenderObject::SetMesh(DckMesh* mesh)
 {
 	mesh_ = mesh;
 	isDirty_ = true;
+}
+
+void RenderObject::SetRenderMode(RenderType render)
+{
+	rendType_ = render;
 }
 
 void RenderObject::SetPosition(glm::vec4 pos)
@@ -100,7 +108,12 @@ void RenderObject::GetSpecular(glm::vec3* coeff, float* exp)
 	*exp = specularExp_;
 }
 
-void RenderObject::Draw(RenderType type)
+std::string RenderObject::GetName()
+{
+	return name_;
+}
+
+void RenderObject::Draw()
 {
 	if (isDirty_)
 	{
@@ -108,7 +121,17 @@ void RenderObject::Draw(RenderType type)
 		isDirty_ = false;
 	}
 
-	DckERender(mesh_, type, modelMat_, tint_, diffuse_, specular_, specularExp_);
+	DckERender(mesh_, rendType_, modelMat_, tint_, diffuse_, specular_, specularExp_);
+}
+
+void RenderObject::Destroy()
+{
+	isDestroyed_ = true;
+}
+
+bool RenderObject::IsDestroyed()
+{
+	return isDestroyed_;
 }
 
 RenderObject::~RenderObject()

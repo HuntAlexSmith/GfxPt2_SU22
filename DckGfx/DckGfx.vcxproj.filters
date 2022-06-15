@@ -46,9 +46,6 @@
     <Filter Include="Source Files\imgui">
       <UniqueIdentifier>{9a9b560f-7f9d-4e82-9bb4-a124a13ad366}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Managers">
-      <UniqueIdentifier>{0983ab15-3cbd-40b0-a325-5782d5aabf74}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -141,6 +138,9 @@
     <ClCompile Include="Source\ImGUISystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ObjectManagerSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Stub.h">
@@ -213,6 +213,9 @@
       <Filter>Source Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Source\ImGUISystem.h">
+      <Filter>Source Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ObjectManagerSystem.h">
       <Filter>Source Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>

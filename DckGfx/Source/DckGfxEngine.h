@@ -12,6 +12,7 @@
 #include "SDL2/SDL.h"
 #include "GfxMath.h"
 #include "SceneList.h"
+#include "RenderObject.h"
 
 void DckEInitialize();
 void DckEUpdate(float dt);
@@ -40,3 +41,6 @@ glm::vec3 DckEGetBackColor();
 void DckESetNextScene(SceneID nextScene);
 
 void DckEAddLight(glm::vec4 pos, glm::vec3 color);
+
+void DckEObjectManagerAdd(RenderObject* object);
+RenderObject* DckEObjectManagerGet(std::string name);

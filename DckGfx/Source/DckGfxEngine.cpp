@@ -10,6 +10,7 @@
 #include "InputSystem.h"
 #include "LightingSystem.h"
 #include "GraphicsSystem.h"
+#include "ObjectManagerSystem.h"
 #include "SceneSystem.h"
 #include "ShaderLib.h"
 #include "MeshLib.h"
@@ -295,4 +296,19 @@ void DckEAddLight(glm::vec4 pos, glm::vec3 color)
 	LightingSystem* lightSys = dynamic_cast<LightingSystem*>(theEngine->GetSystem(System::SysType::LightingSys));
 	if (lightSys)
 		lightSys->AddLight(pos, color);
+}
+
+void DckEObjectManagerAdd(RenderObject* object)
+{
+	ObjectManagerSystem* objManSys = dynamic_cast<ObjectManagerSystem*>(theEngine->GetSystem(System::SysType::ObjectManagerSys));
+	if (objManSys)
+		objManSys->AddObject(object);
+}
+
+RenderObject* DckEObjectManagerGet(std::string name)
+{
+	ObjectManagerSystem* objManSys = dynamic_cast<ObjectManagerSystem*>(theEngine->GetSystem(System::SysType::ObjectManagerSys));
+	if (objManSys)
+		return objManSys->GetObject(name);
+	return nullptr;
 }

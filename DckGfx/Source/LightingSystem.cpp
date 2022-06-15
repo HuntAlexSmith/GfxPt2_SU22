@@ -35,6 +35,7 @@ void LightingSystem::Update(float dt)
 	{
 		cubeLight_ = new RenderObject();
 		cubeLight_->SetMesh(MeshLibraryGet("Cube"));
+		cubeLight_->SetRenderMode(RenderType::Triangles);
 		cubeLight_->SetScale(glm::vec3(0.25f));
 	}
 
@@ -79,7 +80,7 @@ void LightingSystem::Update(float dt)
 		{
 			cubeLight_->SetPosition(lightPos_[i]);
 			cubeLight_->SetTint(lightColor_[i]);
-			cubeLight_->Draw(RenderType::Triangles);
+			cubeLight_->Draw();
 		}
 	}
 }

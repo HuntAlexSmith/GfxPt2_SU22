@@ -8,13 +8,15 @@
 //*****************************************************************************
 
 #include "MeshLib.h"
+#include <string>
 
 class RenderObject {
 public:
 
-	RenderObject();
+	RenderObject(std::string name = "Object");
 
 	void SetMesh(DckMesh* mesh);
+	void SetRenderMode(RenderType render);
 	void SetPosition(glm::vec4 pos);
 	void SetScale(glm::vec3 scale);
 	void SetRotation(glm::vec4 vec, float angle);
@@ -29,14 +31,25 @@ public:
 	glm::vec3 GetDiffuse();
 	void GetSpecular(glm::vec3* coeff, float* exp);
 
-	void Draw(RenderType type);
+	std::string GetName();
+
+	void Draw();
+
+	void Destroy();
+	bool IsDestroyed();
 
 	~RenderObject();
 
 private:
 
+	// Name of the object
+	std::string name_;
+
 	// The mesh the object will render with
 	DckMesh* mesh_;
+
+	// How the mesh will be rendered
+	RenderType rendType_;
 
 	// The position and scale data of the object
 	glm::vec4 pos_;
@@ -57,5 +70,8 @@ private:
 	// The modeling matrix for the object
 	bool isDirty_;
 	glm::mat4 modelMat_;
+
+	// Flag for destroying object
+	bool isDestroyed_;
 
 };

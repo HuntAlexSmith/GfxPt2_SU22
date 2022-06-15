@@ -7,6 +7,8 @@
 //*****************************************************************************
 
 #include "System.h"
+#include "RenderObject.h"
+#include "imgui/imgui.h"
 
 class ImGUISystem : public System {
 public:
@@ -23,6 +25,16 @@ public:
 
 private:
 
+	// Private functions for ImGUI stuff
+	void DebugWindow(float dt);
+	void ObjectList();
+	void SelectedObject();
 
+	// Previous window size and position for screen organization
+	ImVec2 prevWindowSize;
+	ImVec2 prevWindowPos;
+
+	// Currently Selected Object
+	RenderObject* currentObject_;
 
 };

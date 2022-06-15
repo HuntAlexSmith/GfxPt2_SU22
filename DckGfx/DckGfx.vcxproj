@@ -172,6 +172,7 @@
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshLib.cpp" />
+    <ClCompile Include="Source\ObjectManagerSystem.cpp" />
     <ClCompile Include="Source\RenderObject.cpp" />
     <ClCompile Include="Source\RenderSystem.cpp" />
     <ClCompile Include="Source\Scene1.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="Source\LightingSystem.h" />
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\MeshLib.h" />
+    <ClInclude Include="Source\ObjectManagerSystem.h" />
     <ClInclude Include="Source\RenderObject.h" />
     <ClInclude Include="Source\RenderSystem.h" />
     <ClInclude Include="Source\Scene1.h" />
